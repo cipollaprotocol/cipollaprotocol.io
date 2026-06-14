@@ -1,833 +1,143 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cipolla Protocol — About</title>
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #ffffff;
-  --bg2: #f6f5f3;
-  --bg3: #eeece8;
-  --text: #1a1a18;
-  --text2: #6b6a65;
-  --text3: #9e9d97;
-  --border: rgba(0,0,0,0.08);
-  --border2: rgba(0,0,0,0.15);
-  --gold: #b8860b;
-  --gold-light: #faf3df;
-  --radius: 10px;
-  --radius-lg: 16px;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1a1917;
-    --bg2: #242320;
-    --bg3: #2e2d29;
-    --text: #f0ede6;
-    --text2: #a09e97;
-    --text3: #6b6a65;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.15);
-    --gold-light: #2a2415;
-  }
-}
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.7;
-}
-.page {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 4rem 1.5rem 6rem;
-}
+# Cipolla Protocol — Layer Zero
 
-/* NAV */
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 0.5px solid var(--border);
-  max-width: 680px;
-  margin: 0 auto;
-}
-.nav-logo {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
-  text-decoration: none;
-  letter-spacing: -0.01em;
-}
-.nav-logo span { color: var(--gold); }
-.nav-links { display: flex; gap: 1.5rem; }
-.nav-links a {
-  font-size: 13px;
-  color: var(--text2);
-  text-decoration: none;
-}
-.nav-links a:hover { color: var(--text); }
+> Experimental onchain economic mechanism for tokenized assets.  
+> First public implementation on Base — limited ERC721 collection.
 
-/* HERO */
-.hero {
-  padding: 4rem 0 3rem;
-  border-bottom: 0.5px solid var(--border);
-  margin-bottom: 3rem;
-}
-.eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text3);
-  margin-bottom: 1.25rem;
-}
-.hero-title {
-  font-size: 42px;
-  font-weight: 400;
-  letter-spacing: -0.025em;
-  line-height: 1.12;
-  color: var(--text);
-  margin-bottom: 1.5rem;
-}
-.hero-title em {
-  font-style: normal;
-  color: var(--gold);
-}
-.hero-lead {
-  font-size: 17px;
-  color: var(--text2);
-  max-width: 520px;
-  line-height: 1.75;
-  margin-bottom: 2rem;
-}
-.key-phrase {
-  display: inline-block;
-  font-size: 14px;
-  font-style: italic;
-  color: var(--gold);
-  border-left: 2px solid var(--gold);
-  padding-left: 1rem;
-  line-height: 1.6;
-}
+---
 
-/* SECTIONS */
-.section {
-  margin-bottom: 3.5rem;
-}
-.section-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text3);
-  margin-bottom: 1.25rem;
-}
-.section-title {
-  font-size: 26px;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  margin-bottom: 1rem;
-  line-height: 1.3;
-}
-.section-body {
-  font-size: 15px;
-  color: var(--text2);
-  line-height: 1.8;
-}
-.section-body strong {
-  color: var(--text);
-  font-weight: 500;
-}
-.section-body p + p { margin-top: 1rem; }
+## Overview
 
-/* PRINCIPLE BOX */
-.principle-box {
-  background: var(--gold-light);
-  border: 0.5px solid var(--gold);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem 1.75rem;
-  margin: 1.5rem 0;
-}
-.principle-box p {
-  font-size: 15px;
-  color: var(--text);
-  line-height: 1.75;
-}
-.principle-box strong { font-weight: 500; }
+Cipolla Layer Zero is a Genesis NFT collection of 250 tokens deployed on Base L2, built around an experimental economic mechanism called **Provenance Royalties**.
 
-/* WHAT YOU GET */
-.benefits {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  margin: 1.5rem 0;
-  border: 0.5px solid var(--border2);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-.benefit {
-  display: flex;
-  gap: 1.25rem;
-  padding: 1.125rem 1.25rem;
-  background: var(--bg);
-}
-.benefit:nth-child(even) { background: var(--bg2); }
-.benefit-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--gold-light);
-  border: 0.5px solid var(--gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.benefit-icon svg { width: 16px; height: 16px; stroke: var(--gold); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.benefit-content {}
-.benefit-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 3px;
-}
-.benefit-desc {
-  font-size: 13px;
-  color: var(--text2);
-  line-height: 1.6;
-}
+The core innovation: on every secondary resale, royalties are automatically distributed not only to the creator, but to **all historical owners** of the token — proportionally and perpetually, even after selling.
 
-/* NOT INCLUDED */
-.not-included {
-  background: var(--bg2);
-  border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem;
-  margin: 1.5rem 0;
-}
-.not-included-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text2);
-  margin-bottom: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 11px;
-}
-.not-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 13px;
-  color: var(--text2);
-  padding: 5px 0;
-  line-height: 1.5;
-}
-.not-item::before {
-  content: '—';
-  color: var(--text3);
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-.future-note {
-  margin-top: 0.875rem;
-  padding-top: 0.875rem;
-  border-top: 0.5px solid var(--border);
-  font-size: 13px;
-  color: var(--text2);
-  line-height: 1.6;
-}
-.future-note strong { color: var(--text); font-weight: 500; }
+Prior art registered: **INPI ASV-2026-PROVENANCE-ROYALTIES-001** (May 2026)
 
-/* APPLICATIONS GRID */
-.apps-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin: 1.5rem 0;
-}
-.app-card {
-  background: var(--bg2);
-  border-radius: var(--radius);
-  padding: 1rem 1.125rem;
-}
-.app-card-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-.app-card-desc {
-  font-size: 12px;
-  color: var(--text2);
-  line-height: 1.5;
-}
+---
 
-/* EXPLORER SECTION */
-.explorer-card {
-  background: var(--bg);
-  border: 0.5px solid var(--border2);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin: 1.5rem 0;
-}
-.explorer-header {
-  background: var(--text);
-  padding: 1.25rem 1.5rem;
-}
-.explorer-header h3 {
-  font-size: 18px;
-  font-weight: 400;
-  color: var(--bg);
-  letter-spacing: -0.01em;
-  margin-bottom: 4px;
-}
-.explorer-header p {
-  font-size: 13px;
-  color: rgba(255,255,255,0.5);
-}
-.explorer-body {
-  padding: 1.25rem 1.5rem;
-}
-.explorer-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 0.5px solid var(--border);
-}
-.ex-stat-val {
-  font-size: 22px;
-  font-weight: 400;
-  color: var(--text);
-  margin-bottom: 3px;
-}
-.ex-stat-val span {
-  font-size: 13px;
-  color: var(--text2);
-}
-.ex-stat-label { font-size: 12px; color: var(--text3); }
-.explorer-desc {
-  font-size: 14px;
-  color: var(--text2);
-  line-height: 1.7;
-}
-.explorer-desc strong { color: var(--text); font-weight: 500; }
+## Contract Architecture
 
-/* TIMELINE */
-.timeline {
-  margin: 1.5rem 0;
-  position: relative;
-}
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 15px;
-  top: 8px;
-  bottom: 8px;
-  width: 0.5px;
-  background: var(--border2);
-}
-.tl-item {
-  display: flex;
-  gap: 1.25rem;
-  padding: 0 0 1.5rem 0;
-  position: relative;
-}
-.tl-item:last-child { padding-bottom: 0; }
-.tl-dot {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--bg2);
-  border: 0.5px solid var(--border2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text2);
-  position: relative;
-  z-index: 1;
-}
-.tl-dot.active {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: white;
-}
-.tl-content { padding-top: 4px; }
-.tl-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 3px;
-}
-.tl-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
-.tl-tag {
-  display: inline-block;
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 10px;
-  margin-top: 4px;
-  background: var(--gold-light);
-  color: var(--gold);
-  border: 0.5px solid var(--gold);
-}
+| Property | Value |
+|---|---|
+| Standard | ERC721Enumerable |
+| Network | Base L2 |
+| Compiler | Solidity ^0.8.24 |
+| Dependencies | OpenZeppelin v4.9.6 |
+| Max Supply | 250 tokens |
+| Lines of Code | 719 LOC |
+| License | MIT |
 
-/* CLOSING */
-.closing {
-  text-align: center;
-  padding: 3rem 0 1rem;
-  border-top: 0.5px solid var(--border);
-  margin-top: 3rem;
-}
-.closing-quote {
-  font-size: 22px;
-  font-weight: 400;
-  font-style: italic;
-  color: var(--text);
-  letter-spacing: -0.01em;
-  line-height: 1.5;
-  max-width: 480px;
-  margin: 0 auto 1.5rem;
-}
-.closing-sub {
-  font-size: 14px;
-  color: var(--text2);
-  margin-bottom: 2rem;
-}
-.cta-btn {
-  display: inline-block;
-  padding: 11px 32px;
-  background: var(--gold);
-  color: white;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 8px;
-  text-decoration: none;
-  letter-spacing: 0.02em;
-  transition: opacity 0.15s;
-  cursor: pointer;
-  border: none;
-}
-.cta-btn:hover { opacity: 0.85; }
-.cta-sub {
-  font-size: 12px;
-  color: var(--text3);
-  margin-top: 0.75rem;
-}
+### Key features
 
-/* FOOTER */
-.footer {
-  margin-top: 4rem;
-  padding-top: 1.5rem;
-  border-top: 0.5px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 1rem;
-  font-size: 12px;
-  color: var(--text3);
-}
-.footer strong { color: var(--text2); font-weight: 500; }
+- **ERC721Enumerable** — standard NFT with enumeration
+- **Provenance Royalties** — custom distribution mechanism to all historical owners
+- **Pull payment pattern** — holders claim their royalties themselves
+- **SaleRecord** — on-chain history of all declared sales with coherence check
+- **Reveal mechanism** — 30-day delayed reveal with commit-reveal scheme
+- **Emergency pause** — owner can pause mint operations (mint is blocked; distributeRoyalties, claimRoyalties, transfers and withdraw remain accessible during pause)
+- **Price change timelock** — 48h minimum delay for mint price changes
+- **ERC-2981** — standard royalty interface for marketplace compatibility
 
-hr.divider {
-  border: none;
-  border-top: 0.5px solid var(--border);
-  margin: 3rem 0;
-}
+### Custom economic logic
 
-  .nav-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 0.5px solid var(--border);
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    z-index: 100;
-    max-width: 100%;
-  }
-  .nav-logo { font-size: 15px; font-weight: 500; color: var(--text); text-decoration: none; letter-spacing: -0.01em; }
-  .nav-logo span { color: var(--gold); }
-  .nav-right { display: flex; align-items: center; gap: 1rem; }
-  .nav-link { font-size: 13px; color: var(--text2); text-decoration: none; transition: color 0.15s; }
-  .nav-link:hover, .nav-link.active { color: var(--text); }
-  .nav-dropdown { position: relative; }
-  .nav-dropdown-btn {
-    display: flex; align-items: center; gap: 5px;
-    font-size: 13px; color: var(--text2);
-    background: none; border: 0.5px solid var(--border2);
-    border-radius: 6px; padding: 5px 12px; cursor: pointer; transition: all 0.15s;
-  }
-  .nav-dropdown-btn:hover { color: var(--text); border-color: var(--text); }
-  .nav-dropdown-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; transition: transform 0.15s; }
-  .nav-dropdown-btn.open svg { transform: rotate(180deg); }
-  .nav-dropdown-menu {
-    display: none; position: absolute; right: 0; top: calc(100% + 6px);
-    background: var(--bg); border: 0.5px solid var(--border2);
-    border-radius: 10px; min-width: 200px; overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08); z-index: 200;
-  }
-  .nav-dropdown-menu.open { display: block; }
-  .nav-menu-item {
-    display: block; padding: 10px 16px; font-size: 13px; color: var(--text2);
-    text-decoration: none; border-bottom: 0.5px solid var(--border); transition: background 0.1s;
-  }
-  .nav-menu-item:last-child { border-bottom: none; }
-  .nav-menu-item:hover { background: var(--bg2); color: var(--text); }
-  .nav-menu-item .item-title { font-weight: 500; color: var(--text); margin-bottom: 2px; }
-  .nav-menu-item .item-sub { font-size: 11px; color: var(--text3); }
-  .nav-menu-item.current .item-title { color: var(--gold); }
+```
+On each secondary sale (distributeRoyalties called):
+→ 10% → creator (perpetual)
+→ 5%  → split equally among all unique historical owners
+→ 15% calculated from msg.value (ETH actually sent)
+→ salePrice declared is used for coherence check only
+```
 
-</style>
-</head>
-<body>
+### SaleRecord — on-chain transparency
 
-<nav>
-  <div class="nav-bar">
-    <a class="nav-logo" href="cipolla_prototype.html">Cipolla <span>Protocol</span></a>
-    <div class="nav-right">
-      <a class="nav-link" href="cipolla_prototype.html">Layer Zero</a>
-      <a class="nav-link active" href="cipolla_about.html">About</a>
-      <div class="nav-dropdown">
-        <button class="nav-dropdown-btn" id="ddBtn" onclick="toggleMenu()">
-          Pages
-          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        </button>
-        <div class="nav-dropdown-menu" id="ddMenu">
-          <a class="nav-menu-item" href="cipolla_prototype.html">
-            <div class="item-title">Layer Zero</div>
-            <div class="item-sub">Genesis collection · 250 tokens</div>
-          </a>
-          <a class="nav-menu-item current" href="cipolla_about.html">
-            <div class="item-title">About</div>
-            <div class="item-sub">Protocol · Genesis Explorers · Roadmap</div>
-          </a>
-          <a class="nav-menu-item" href="#">
-            <div class="item-title">Gallery</div>
-            <div class="item-sub">Oil paintings by Anastasia Vincent — coming soon</div>
-          </a>
-          <a class="nav-menu-item" href="#">
-            <div class="item-title">Shop</div>
-            <div class="item-sub">Prints & merch — coming soon</div>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</nav>
+Each call to `distributeRoyalties()` records:
+- Declared sale price (caller-supplied)
+- Royalties sent
+- Channel (OpenSea, Foundation, Blur, P2P, etc.)
+- Coherence check (msg.value == salePrice × 15%)
+- Price difference vs previous sale
 
-<div class="page">
+---
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="eyebrow">Cipolla Protocol — About</div>
-    <h1 class="hero-title">A new principle<br>of <em>shared ownership</em></h1>
-    <p class="hero-lead">
-      When an asset gains value, who benefits? Today: only the current owner.
-      Cipolla Protocol proposes something different — that value, once built together, should be shared together. Permanently.
-    </p>
+## Security considerations
 
-  </div>
+- `nonReentrant` on all ETH-transferring functions
+- Pull payment pattern prevents DoS via gas exhaustion
+- Creator excluded from holder pool (no self-dealing)
+- Unique address enforcement prevents duplicate history entries
+- `totalPendingClaims` protects holder royalties from creator withdrawal
+- 48h timelock on mint price changes
 
-  <!-- SECTION 1 — THE PRINCIPLE -->
-  <div class="section">
-    <div class="section-eyebrow">The principle</div>
-    <h2 class="section-title">Provenance Royalties</h2>
-    <div class="section-body">
-      <p>Every time a tokenized asset is resold, a fraction of the sale price is automatically distributed among <strong>all its previous owners</strong> — not just the creator.</p>
-      <p>The list of beneficiaries is open and grows with every transfer. The mechanism is perpetual. There is no expiry, no cap, no manual intervention.</p>
-    </div>
+---
 
-    <div class="principle-box">
-      <p>At each secondary sale, <strong>15% of the sale price</strong> is distributed automatically: <strong>10% to the original creator</strong> (perpetual), and <strong>5% shared equally among all historical owners</strong> of that token — everyone who has ever held it.</p>
-    </div>
+## Files
 
-    <div class="section-body">
-      <p>The earlier you hold, the more resales you participate in. Conviction is rewarded — not once, but permanently. And the token can circulate freely: selling does not remove you from the history of the asset.</p>
-    </div>
-  </div>
+```
+CipollaLayerZero.sol    — Main contract (719 LOC)
+```
 
-  <hr class="divider">
+---
 
-  <!-- SECTION 2 — UNIVERSAL APPLICATION -->
-  <div class="section">
-    <div class="section-eyebrow">Scope</div>
-    <h2 class="section-title">Beyond art — any tokenized asset</h2>
-    <div class="section-body">
-      <p>Provenance Royalties is not an art mechanism. It is an <strong>economic primitive</strong> — a foundational rule that can be applied wherever ownership is traceable on a blockchain.</p>
-    </div>
+## For the security reviewer
 
-    <div class="apps-grid">
-      <div class="app-card">
-        <div class="app-card-title">Visual art</div>
-        <div class="app-card-desc">Paintings, photographs, digital works — the original context of the protocol.</div>
-      </div>
-      <div class="app-card">
-        <div class="app-card-title">Music rights</div>
-        <div class="app-card-desc">Tokenized tracks, albums, publishing rights — every resale rewards past holders.</div>
-      </div>
-      <div class="app-card">
-        <div class="app-card-title">Intellectual property</div>
-        <div class="app-card-desc">Patents, trademarks, licenses — provenance as an economic layer on IP.</div>
-      </div>
-      <div class="app-card">
-        <div class="app-card-title">Real estate</div>
-        <div class="app-card-desc">Fractionalized property tokens — historical holders share in future appreciation.</div>
-      </div>
-      <div class="app-card">
-        <div class="app-card-title">Collectibles</div>
-        <div class="app-card-desc">Watches, rare objects, sports memorabilia — value distributed across the chain of custody.</div>
-      </div>
-      <div class="app-card">
-        <div class="app-card-title">Financial instruments</div>
-        <div class="app-card-desc">Tokenized bonds, fund shares — provenance as a layer on secondary market transactions.</div>
-      </div>
-    </div>
+### What we are looking for
 
-    <div class="section-body">
-      <p>The Cipolla Protocol is being built as an open infrastructure for this principle — deployable by anyone, for any asset class, on any compatible blockchain.</p>
-    </div>
-  </div>
+- Potential vulnerabilities in the custom economic mechanism
+- Edge cases and attack vectors
+- ERC721 interaction review (operators, approvals, transfers)
+- Economic logic sanity checks
+- Timing and ordering issues
 
-  <hr class="divider">
+### Areas requiring special attention
 
-  <!-- SECTION 3 — LAYER ZERO -->
-  <div class="section">
-    <div class="section-eyebrow">Layer Zero</div>
-    <h2 class="section-title">The first live state of the protocol</h2>
-    <div class="section-body">
-      <p>Before a protocol can be trusted, it must be tested. Layer Zero is that test — a <strong>limited collection of 250 tokens</strong>, deployed on Base, running the first implementation of Provenance Royalties in the wild.</p>
-      <p>Each token is a layer of an onion — the founding image of the protocol, painted in oil on canvas by Anastasia Smirnova Vincent, the originator of the Provenance Royalties concept.</p>
-    </div>
+1. `distributeRoyalties()` — custom distribution logic
+2. `claimRoyalties()` — pull payment pattern
+3. `_afterTokenTransfer()` — hook logic and history recording
+4. `withdraw()` — protection of pending claims
+5. Reveal process — baseURI management
+6. Marketplace compatibility — operator assumptions
 
-    <div class="explorer-card">
-      <div class="explorer-header">
-        <h3>Genesis Explorers</h3>
-        <p>The 249 first participants of the protocol experiment</p>
-      </div>
-      <div class="explorer-body">
-        <div class="explorer-stats">
-          <div>
-            <div class="ex-stat-val">249</div>
-            <div class="ex-stat-label">Available tokens</div>
-          </div>
-          <div>
-            <div class="ex-stat-val">0.05 <span>ETH</span></div>
-            <div class="ex-stat-label">Mint price</div>
-          </div>
-          <div>
-            <div class="ex-stat-val">5<span>%</span></div>
-            <div class="ex-stat-label">Holder royalty pool</div>
-          </div>
-        </div>
-        <div class="explorer-desc">
-          The 249 Genesis Explorers are not collectors in the traditional sense. They are <strong>the first participants in a live protocol test</strong> — the people whose addresses will appear in the ownership history of the first Cipolla contract, permanently recorded on the Base blockchain.
-          <br><br>
-          In ten years, anyone can look up this contract on Basescan and see that you were there at the beginning. That is not a promise. It is a fact, written in immutable code.
-        </div>
-      </div>
-    </div>
-  </div>
+### Important invariants
 
-  <hr class="divider">
+```
+→ MAX_SUPPLY is fixed at 250 — immutable
+→ Owner cannot withdraw holder royalties (totalPendingClaims)
+→ Economic constants (10%/5%) are immutable
+→ Reveal is delayed by 30 days minimum
+→ Price changes require 48h timelock
+```
 
-  <!-- SECTION 4 — WHAT YOU GET -->
-  <div class="section">
-    <div class="section-eyebrow">What Genesis Explorers receive</div>
-    <h2 class="section-title">Concrete and permanent</h2>
+### What we provide
 
-    <div class="benefits">
-      <div class="benefit">
-        <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-        </div>
-        <div class="benefit-content">
-          <div class="benefit-title">Perpetual royalties on every future resale</div>
-          <div class="benefit-desc">Every time your token changes hands after you, 5% of the sale price is split equally among all historical owners — including you, even if you have sold. Note: each address appears only once in the ownership history of a token — this ensures the integrity of the distribution for all participants.</div>
-        </div>
-      </div>
-      <div class="benefit">
-        <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-        </div>
-        <div class="benefit-content">
-          <div class="benefit-title">Permanent on-chain identity</div>
-          <div class="benefit-desc">Your address is recorded in the ownership history of the first Cipolla contract. This record is immutable, public, and permanent — independent of any platform or company.</div>
-        </div>
-      </div>
-      <div class="benefit">
-        <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4l3 3"></path></svg>
-        </div>
-        <div class="benefit-content">
-          <div class="benefit-title">Historical status — Layer Zero participant</div>
-          <div class="benefit-desc">You are among the first 249 people to test the Provenance Royalties mechanism in a live deployment. Token #1 is held by the creator. Tokens #2–250 are yours.</div>
-        </div>
-      </div>
-      <div class="benefit">
-        <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
-        </div>
-        <div class="benefit-content">
-          <div class="benefit-title">An original work of art</div>
-          <div class="benefit-desc">Each token is a visual layer of the Cipolla onion — painted in oil on canvas by Anastasia Smirnova Vincent. A living representation of a new economic philosophy of ownership — the first token in a protocol designed to redistribute value across everyone who contributes to it.</div>
-        </div>
-      </div>
-      <div class="benefit">
-        <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-        </div>
-        <div class="benefit-content">
-          <div class="benefit-title">Priority access to future protocol releases</div>
-          <div class="benefit-desc">Genesis Explorers will receive direct notifications about new Cipolla collections, protocol updates, and experimental features — before any public announcement. Early access to this information means the ability to act first: mint at launch price, participate in new mechanisms before they are widely known, and position ahead of the broader market.</div>
-        </div>
-      </div>
-    </div>
-  </div>
+- Commented contract
+- Modification journal (on request)
+- Our own test results (on request)
+- Full mechanism documentation (on request)
 
-  <hr class="divider">
+---
 
-  <!-- SECTION 5 — WHAT YOU DON'T GET -->
-  <div class="section">
-    <div class="section-eyebrow">Transparency</div>
-    <h2 class="section-title">What Layer Zero does not include</h2>
-    <div class="section-body">
-      <p>We believe in being explicit about what is and is not offered. Layer Zero V1 is an experimental deployment — not a governance instrument.</p>
-    </div>
+## Contact
 
-    <div class="not-included">
-      <div class="not-included-title">Not included in V1</div>
-      <div class="not-item">Governance rights or voting on protocol parameters</div>
-      <div class="not-item">Promises of future value or financial returns</div>
-      <div class="not-item">Rights to the physical painting (retained by the artist)</div>
-      <div class="not-item">Access to a private community or dashboard (coming later)</div>
+- Email: contact@cipollaprotocol.io
+- X: [@cipollaprotocol](https://x.com/cipollaprotocol)
+- Site: [cipollaprotocol.io](https://cipollaprotocol.io)
 
-      <div class="future-note">
-        <strong>On governance:</strong> Cipolla Protocol governance will be handled through a dedicated governance token, introduced in a future phase. Layer Zero Genesis Explorers will receive priority access to that governance token when it launches. The mechanism and conditions will be announced publicly in advance.
-      </div>
-    </div>
-  </div>
+---
 
-  <hr class="divider">
+---
 
-  <!-- SECTION 6 — ROADMAP -->
-  <div class="section">
-    <div class="section-eyebrow">Roadmap</div>
-    <h2 class="section-title">Where Cipolla is going</h2>
+## Important notice — V1 economic responsibility
 
-    <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-dot active">1</div>
-        <div class="tl-content">
-          <div class="tl-title">Layer Zero — Genesis collection</div>
-          <div class="tl-desc">250 tokens. First live deployment of Provenance Royalties on Base. Equal shares distribution (Variant A).</div>
-          <span class="tl-tag">Now · 2026</span>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot">2</div>
-        <div class="tl-content">
-          <div class="tl-title">Launch of the first NFT collection of oil paintings tokenized on Cipolla Protocol</div>
-          <div class="tl-desc">The first collection of original oil paintings deployed on Cipolla Protocol. Genesis Explorers receive priority access and discounted mint.</div>
-          <span class="tl-tag">2026</span>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot">3</div>
-        <div class="tl-content">
-          <div class="tl-title">Protocol V2 — threshold-based distribution</div>
-          <div class="tl-desc">Introduction of Variant B (pro-rata by price paid) with automatic switching above a configurable price threshold.</div>
-          <span class="tl-tag">2026–2027</span>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot">4</div>
-        <div class="tl-content">
-          <div class="tl-title">Open protocol — any creator can deploy</div>
-          <div class="tl-desc">Cipolla Protocol opens to third-party collections. Any creator can deploy a collection with Provenance Royalties — art, music, IP, collectibles.</div>
-          <span class="tl-tag">2027</span>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot">5</div>
-        <div class="tl-content">
-          <div class="tl-title">Governance token launch</div>
-          <div class="tl-desc">A dedicated governance token is introduced. Genesis Explorers receive priority allocation. Protocol parameters become community-governed.</div>
-          <span class="tl-tag">Future</span>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot">6</div>
-        <div class="tl-content">
-          <div class="tl-title">Cipolla Platform — universal tokenized marketplace</div>
-          <div class="tl-desc">A full marketplace for any tokenized asset class — art, real estate, financial instruments, intellectual property — all running on Provenance Royalties.</div>
-          <span class="tl-tag">Long term</span>
-        </div>
-      </div>
-    </div>
-  </div>
+In this first version, calling `distributeRoyalties()` is the responsibility of the **new owner** after each secondary sale.
 
-  <hr class="divider">
+The declared sale price (`salePrice`) is supplied by the caller and is **not cryptographically verified** on-chain. The contract checks coherence between the declared price and the ETH sent (msg.value should equal salePrice × 15%), but cannot verify the actual transaction price for P2P sales. For marketplace sales, the price is publicly verifiable via marketplace APIs.
 
-  <!-- SECTION 7 — ORIGIN -->
-  <div class="section">
-    <div class="section-eyebrow">Origin</div>
-    <h2 class="section-title">Where this idea came from</h2>
-    <div class="section-body">
-      <p>Cipolla Protocol was conceived by <strong>Anastasia Smirnova Vincent</strong>, an artist working in Paris.</p>
-      <p>While preparing the launch of her NFT collection, she was thinking about a model of social distribution of value created collectively — a way to make the risk of acquisition permanently profitable for every owner who contributes to building that value. This thinking became the Provenance Royalties principle.</p>
-      <p>The prior art was filed with the INPI (Institut National de la Propriété Industrielle) in May 2026 under reference <strong>ASV-2026-PROVENANCE-ROYALTIES-001</strong>. The technical specification is published openly on Mirror.xyz.</p>
-      <p>The onion was chosen as the symbol of this protocol because it is built entirely of layers — each one necessary, each one surrounding the one before. <strong>Every layer counts.</strong></p>
-    </div>
-  </div>
+**Future versions** of the Cipolla Protocol will integrate price verification and automatic royalty distribution within a single atomic transaction on the Cipolla marketplace — eliminating the need for manual calls and ensuring trust-minimized distribution.
 
-  <!-- CLOSING -->
-  <div class="closing">
-    <p class="closing-quote">"This is not just an NFT.<br>It is the launch of a new philosophy of ownership."</p>
-    <p class="closing-sub">249 tokens available · 0.05 ETH · Base network</p>
-    <button class="cta-btn" onclick="window.location.href='cipolla_prototype.html'">Explore Layer Zero</button>
-    <div class="cta-sub">Contract deployment coming soon</div>
-  </div>
+This V1 is an experimental test of the economic and behavioral model.
 
-  <!-- FOOTER -->
-  <div class="footer">
-    <div>
-      <strong>Cipolla Protocol</strong><br>
-      Conceived by Anastasia Smirnova Vincent · Paris, 2026<br>
-      Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001
-    </div>
-    <div style="text-align:right">
-      Prototype V1<br>
-      Base network · Solidity 0.8.24
-    </div>
-  </div>
+---
 
-</div>
+*Pre-launch. NDA required before access to the repository.*
 
-<script>
-function toggleMenu() {
-  const btn = document.getElementById('ddBtn');
-  const menu = document.getElementById('ddMenu');
-  btn.classList.toggle('open');
-  menu.classList.toggle('open');
-}
-document.addEventListener('click', function(e) {
-  const dd = document.querySelector('.nav-dropdown');
-  if (dd && !dd.contains(e.target)) {
-    document.getElementById('ddBtn').classList.remove('open');
-    document.getElementById('ddMenu').classList.remove('open');
-  }
-});
-</script>
-
-</body>
-</html>
+*© Anastasia Smirnova Vincent, 2026. Code: MIT license. Concept and economic mechanism: all rights reserved. Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001.*
