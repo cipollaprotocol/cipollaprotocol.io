@@ -1,143 +1,198 @@
-# Cipolla Protocol — Layer Zero
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cipolla Protocol</title>
+<meta name="description" content="An experimental onchain economic mechanism for tokenized assets.">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-> Experimental onchain economic mechanism for tokenized assets.  
-> First public implementation on Base — limited ERC721 collection.
+:root {
+  --bg:    #1a1917;
+  --bg2:   #242320;
+  --gold:  #b8860b;
+  --gold2: #daa520;
+  --text:  #f0ede6;
+  --text2: #a09e97;
+  --text3: #6b6a65;
+}
 
----
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
 
-## Overview
+.wrap {
+  max-width: 560px;
+  width: 100%;
+  text-align: center;
+}
 
-Cipolla Layer Zero is a Genesis NFT collection of 250 tokens deployed on Base L2, built around an experimental economic mechanism called **Provenance Royalties**.
+/* Logo / onion */
+.onion {
+  font-size: 48px;
+  margin-bottom: 2rem;
+  display: block;
+  animation: breathe 4s ease-in-out infinite;
+}
 
-The core innovation: on every secondary resale, royalties are automatically distributed not only to the creator, but to **all historical owners** of the token — proportionally and perpetually, even after selling.
+@keyframes breathe {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.06); }
+}
 
-Prior art registered: **INPI ASV-2026-PROVENANCE-ROYALTIES-001** (May 2026)
+/* Name */
+.name {
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+  font-weight: 500;
+}
 
----
+/* Divider */
+.divider {
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  margin: 1.5rem auto;
+  opacity: 0.4;
+}
 
-## Contract Architecture
+/* Tagline */
+.tagline {
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1.45;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem;
+}
 
-| Property | Value |
-|---|---|
-| Standard | ERC721Enumerable |
-| Network | Base L2 |
-| Compiler | Solidity ^0.8.24 |
-| Dependencies | OpenZeppelin v4.9.6 |
-| Max Supply | 250 tokens |
-| Lines of Code | 719 LOC |
-| License | MIT |
+.tagline em {
+  font-style: normal;
+  color: var(--gold2);
+}
 
-### Key features
+/* Sub */
+.sub {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 3rem;
+}
 
-- **ERC721Enumerable** — standard NFT with enumeration
-- **Provenance Royalties** — custom distribution mechanism to all historical owners
-- **Pull payment pattern** — holders claim their royalties themselves
-- **SaleRecord** — on-chain history of all declared sales with coherence check
-- **Reveal mechanism** — 30-day delayed reveal with commit-reveal scheme
-- **Emergency pause** — owner can pause mint operations (mint is blocked; distributeRoyalties, claimRoyalties, transfers and withdraw remain accessible during pause)
-- **Price change timelock** — 48h minimum delay for mint price changes
-- **ERC-2981** — standard royalty interface for marketplace compatibility
+/* Status pill */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg2);
+  border: 1px solid rgba(184,134,11,0.25);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 12px;
+  color: var(--text2);
+  letter-spacing: 0.04em;
+  margin-bottom: 3rem;
+}
 
-### Custom economic logic
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 2s ease-in-out infinite;
+}
 
-```
-On each secondary sale (distributeRoyalties called):
-→ 10% → creator (perpetual)
-→ 5%  → split equally among all unique historical owners
-→ 15% calculated from msg.value (ETH actually sent)
-→ salePrice declared is used for coherence check only
-```
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}
 
-### SaleRecord — on-chain transparency
+/* Links */
+.links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
 
-Each call to `distributeRoyalties()` records:
-- Declared sale price (caller-supplied)
-- Royalties sent
-- Channel (OpenSea, Foundation, Blur, P2P, etc.)
-- Coherence check (msg.value == salePrice × 15%)
-- Price difference vs previous sale
+.links a {
+  font-size: 13px;
+  color: var(--text3);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
 
----
+.links a:hover { color: var(--gold); }
 
-## Security considerations
+.links-sep {
+  width: 1px;
+  height: 12px;
+  background: var(--text3);
+  opacity: 0.3;
+}
 
-- `nonReentrant` on all ETH-transferring functions
-- Pull payment pattern prevents DoS via gas exhaustion
-- Creator excluded from holder pool (no self-dealing)
-- Unique address enforcement prevents duplicate history entries
-- `totalPendingClaims` protects holder royalties from creator withdrawal
-- 48h timelock on mint price changes
+/* Footer */
+footer {
+  margin-top: 4rem;
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+}
+</style>
+</head>
+<body>
 
----
+<div class="wrap">
 
-## Files
+  <span class="onion">🧅</span>
 
-```
-CipollaLayerZero.sol    — Main contract (719 LOC)
-```
+  <div class="name">Cipolla Protocol</div>
 
----
+  <div class="divider"></div>
 
-## For the security reviewer
+  <p class="tagline">
+    A new principle of<br>
+    <em>shared ownership.</em>
+  </p>
 
-### What we are looking for
+  <p class="sub">
+    A public experiment in a new economic mechanism<br>
+    for tokenized assets. First implementation on Base.
+  </p>
 
-- Potential vulnerabilities in the custom economic mechanism
-- Edge cases and attack vectors
-- ERC721 interaction review (operators, approvals, transfers)
-- Economic logic sanity checks
-- Timing and ordering issues
+  <div class="status">
+    <span class="dot"></span>
+    Launch coming soon — 250 NFTs
+  </div>
 
-### Areas requiring special attention
+  <div class="links">
+    <a href="https://x.com/cipollaprotocol" target="_blank">X / Twitter</a>
+    <div class="links-sep"></div>
+    <a href="https://discord.gg/cipollaprotocol" target="_blank">Discord</a>
+    <div class="links-sep"></div>
+    <a href="mailto:contact@cipollaprotocol.io">Contact</a>
+  </div>
 
-1. `distributeRoyalties()` — custom distribution logic
-2. `claimRoyalties()` — pull payment pattern
-3. `_afterTokenTransfer()` — hook logic and history recording
-4. `withdraw()` — protection of pending claims
-5. Reveal process — baseURI management
-6. Marketplace compatibility — operator assumptions
+</div>
 
-### Important invariants
+<footer>
+  © Anastasia Smirnova Vincent, 2026 &nbsp;·&nbsp;
+  Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001
+</footer>
 
-```
-→ MAX_SUPPLY is fixed at 250 — immutable
-→ Owner cannot withdraw holder royalties (totalPendingClaims)
-→ Economic constants (10%/5%) are immutable
-→ Reveal is delayed by 30 days minimum
-→ Price changes require 48h timelock
-```
-
-### What we provide
-
-- Commented contract
-- Modification journal (on request)
-- Our own test results (on request)
-- Full mechanism documentation (on request)
-
----
-
-## Contact
-
-- Email: contact@cipollaprotocol.io
-- X: [@cipollaprotocol](https://x.com/cipollaprotocol)
-- Site: [cipollaprotocol.io](https://cipollaprotocol.io)
-
----
-
----
-
-## Important notice — V1 economic responsibility
-
-In this first version, calling `distributeRoyalties()` is the responsibility of the **new owner** after each secondary sale.
-
-The declared sale price (`salePrice`) is supplied by the caller and is **not cryptographically verified** on-chain. The contract checks coherence between the declared price and the ETH sent (msg.value should equal salePrice × 15%), but cannot verify the actual transaction price for P2P sales. For marketplace sales, the price is publicly verifiable via marketplace APIs.
-
-**Future versions** of the Cipolla Protocol will integrate price verification and automatic royalty distribution within a single atomic transaction on the Cipolla marketplace — eliminating the need for manual calls and ensuring trust-minimized distribution.
-
-This V1 is an experimental test of the economic and behavioral model.
-
----
-
-*Pre-launch. NDA required before access to the repository.*
-
-*© Anastasia Smirnova Vincent, 2026. Code: MIT license. Concept and economic mechanism: all rights reserved. Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001.*
+</body>
+</html>
