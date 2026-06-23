@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cipolla Protocol</title>
 <meta name="description" content="An experimental onchain economic mechanism for tokenized assets.">
+<link rel="icon" href="/cipolla_favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/cipolla_favicon_512.png"/>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
   --bg:    #1a1917;
   --bg2:   #242320;
@@ -17,7 +18,6 @@
   --text2: #a09e97;
   --text3: #6b6a65;
 }
-
 body {
   background: var(--bg);
   color: var(--text);
@@ -29,27 +29,25 @@ body {
   justify-content: center;
   padding: 2rem;
 }
-
 .wrap {
   max-width: 560px;
   width: 100%;
   text-align: center;
 }
-
-/* Logo / onion */
 .onion {
-  font-size: 48px;
   margin-bottom: 2rem;
   display: block;
   animation: breathe 4s ease-in-out infinite;
 }
-
+.onion img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
 @keyframes breathe {
   0%, 100% { opacity: 0.8; transform: scale(1); }
   50%       { opacity: 1;   transform: scale(1.06); }
 }
-
-/* Name */
 .name {
   font-size: 13px;
   letter-spacing: 0.22em;
@@ -58,8 +56,6 @@ body {
   margin-bottom: 0.6rem;
   font-weight: 500;
 }
-
-/* Divider */
 .divider {
   width: 40px;
   height: 1px;
@@ -67,31 +63,24 @@ body {
   margin: 1.5rem auto;
   opacity: 0.4;
 }
-
-/* Tagline */
 .tagline {
   font-size: 22px;
   font-weight: 300;
   line-height: 1.45;
   color: var(--text);
   letter-spacing: -0.01em;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
-
 .tagline em {
   font-style: normal;
   color: var(--gold2);
 }
-
-/* Sub */
 .sub {
   font-size: 14px;
   color: var(--text2);
   line-height: 1.6;
   margin-bottom: 3rem;
 }
-
-/* Status pill */
 .status {
   display: inline-flex;
   align-items: center;
@@ -105,7 +94,6 @@ body {
   letter-spacing: 0.04em;
   margin-bottom: 3rem;
 }
-
 .dot {
   width: 6px;
   height: 6px;
@@ -113,13 +101,10 @@ body {
   background: var(--gold);
   animation: pulse 2s ease-in-out infinite;
 }
-
 @keyframes pulse {
   0%, 100% { opacity: 0.4; }
   50%       { opacity: 1; }
 }
-
-/* Links */
 .links {
   display: flex;
   align-items: center;
@@ -127,7 +112,6 @@ body {
   gap: 2rem;
   flex-wrap: wrap;
 }
-
 .links a {
   font-size: 13px;
   color: var(--text3);
@@ -135,17 +119,13 @@ body {
   letter-spacing: 0.04em;
   transition: color 0.2s;
 }
-
 .links a:hover { color: var(--gold); }
-
 .links-sep {
   width: 1px;
   height: 12px;
   background: var(--text3);
   opacity: 0.3;
 }
-
-/* Footer */
 footer {
   margin-top: 4rem;
   font-size: 11px;
@@ -155,30 +135,24 @@ footer {
 </style>
 </head>
 <body>
-
 <div class="wrap">
-
-  <span class="onion">🧅</span>
-
-  <div class="name">Cipolla Protocol</div>
-
+  <span class="onion">
+    <img src="/cipolla_favicon_512.png" alt="Cipolla Protocol"/>
+  </span>
+  <div class="name">Cipolla Protocol<br/><span style="font-size:9px;letter-spacing:0.15em;opacity:0.6;text-align:center;display:block"> Every layer counts.</span></div>
   <div class="divider"></div>
-
   <p class="tagline">
-    A new principle of<br>
-    <em>shared ownership.</em>
+    Dynamic value distribution<br>
+    for <em>tokenized assets.</em>
   </p>
-
   <p class="sub">
     A public experiment in a new economic mechanism<br>
     for tokenized assets. First implementation on Base.
   </p>
-
   <div class="status">
     <span class="dot"></span>
     Launch coming soon — 250 NFTs
   </div>
-
   <div class="links">
     <a href="https://x.com/cipollaprotocol" target="_blank">X / Twitter</a>
     <div class="links-sep"></div>
@@ -186,13 +160,10 @@ footer {
     <div class="links-sep"></div>
     <a href="mailto:contact@cipollaprotocol.io">Contact</a>
   </div>
-
 </div>
-
 <footer>
   © Anastasia Smirnova Vincent, 2026 &nbsp;·&nbsp;
   Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001
 </footer>
-
 </body>
 </html>
