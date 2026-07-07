@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Documentation — Cipolla Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;--bg2:#141414;--bg3:#1a1a1a;
+  --border:#2a2a2a;--gold:#c9a84c;--gold2:#e8c96a;
+  --sage:#7a9e8e;--text:#e8e4dc;--text2:#9a9490;--text3:#5a5650;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-weight:300;font-size:15px;line-height:1.7}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,13,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-family:'Fraunces',serif;font-size:1.1rem;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.875rem;letter-spacing:0.04em;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+
+.docs-layout{display:grid;grid-template-columns:220px 1fr;gap:0;max-width:1200px;margin:0 auto;padding-top:56px;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{border-right:1px solid var(--border);padding:2rem 1.25rem;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.sidebar-section{margin-bottom:1.5rem}
+.sidebar-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:0.6rem}
+.sidebar-links{list-style:none;display:flex;flex-direction:column;gap:0.1rem}
+.sidebar-links a{display:block;padding:0.3rem 0.5rem;border-radius:3px;font-size:0.85rem;color:var(--text2);text-decoration:none;transition:all 0.15s}
+.sidebar-links a:hover{color:var(--text);background:var(--bg2)}
+.sidebar-links a.active{color:var(--gold);background:rgba(201,168,76,0.06)}
+
+/* CONTENT */
+.docs-content{padding:3rem 3rem 4rem;max-width:780px}
+.docs-content section{margin-bottom:56px;scroll-margin-top:72px}
+h1{font-family:'Fraunces',serif;font-size:2rem;font-weight:300;color:var(--text);margin-bottom:0.75rem}
+h1 em{font-style:italic;color:var(--gold)}
+h2{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border)}
+h3{font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;margin-top:1.75rem}
+p{color:var(--text2);margin-bottom:1rem;line-height:1.8}
+p strong{color:var(--text);font-weight:500}
+a{color:var(--gold);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* CODE */
+pre{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:1.25rem;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--text2);line-height:1.7}
+code{font-family:'JetBrains Mono',monospace;font-size:0.82rem;background:var(--bg2);padding:0.15rem 0.4rem;border-radius:3px;color:var(--text2)}
+.keyword{color:var(--gold)}
+.comment{color:var(--text3);font-style:italic}
+.string{color:var(--sage)}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);padding:0.6rem 1rem;border-bottom:1px solid var(--border);text-align:left}
+td{padding:0.7rem 1rem;border-bottom:1px solid rgba(42,42,42,0.5);font-size:0.875rem;vertical-align:top}
+td:first-child{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--text)}
+td:nth-child(2){color:var(--text2)}
+
+/* CALLOUT */
+.callout{border-left:2px solid var(--gold);padding:1rem 1.25rem;background:rgba(201,168,76,0.04);margin:1.5rem 0;border-radius:0 4px 4px 0}
+.callout p{margin:0;font-size:0.875rem;color:var(--text2)}
+.callout strong{color:var(--text)}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:0;margin:1.5rem 0}
+.step{display:grid;grid-template-columns:32px 1fr;gap:0 1rem}
+.step-line{display:flex;flex-direction:column;align-items:center}
+.step-num{width:28px;height:28px;border-radius:50%;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--gold);flex-shrink:0}
+.step-connector{flex:1;width:1px;background:var(--border);margin:4px 0}
+.step:last-child .step-connector{display:none}
+.step-body{padding-bottom:1.5rem}
+.step-title{font-size:0.875rem;font-weight:500;color:var(--text);margin-bottom:0.25rem}
+.step-desc{font-size:0.85rem;color:var(--text2)}
+
+/* FAQ */
+.faq-item{border-bottom:1px solid var(--border);padding:1.25rem 0}
+.faq-q{font-size:0.95rem;font-weight:500;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.faq-q::after{content:'↓';color:var(--text3);transition:transform 0.2s;flex-shrink:0}
+.faq-item.open .faq-q::after{transform:rotate(180deg)}
+.faq-a{display:none;padding-top:0.75rem;font-size:0.875rem;color:var(--text2);line-height:1.7}
+.faq-item.open .faq-a{display:block}
+
+footer{border-top:1px solid var(--border);padding:2rem}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-copy{font-size:0.8rem;color:var(--text3)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:0.8rem;color:var(--text3);text-decoration:none}
+.footer-links a:hover{color:var(--text2)}
+
+@media(max-width:800px){
+  .docs-layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .docs-content{padding:2rem 1.25rem 3rem}
+}
+</style>
+<link rel="icon" href="/cipolla_favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/cipolla_favicon_512.png"/>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="/cipolla_favicon_32.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"/>Cipolla Protocol</a>
+    <ul class="nav-links">
+      <li><a href="/about">About</a></li>
+      <li><a href="/docs" class="active">Docs</a></li>
+      <li><a href="/prototype">Prototype</a></li>
+      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/mint">Mint</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="docs-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Overview</div>
+      <ul class="sidebar-links">
+        <li><a href="#overview">Contract overview</a></li>
+        <li><a href="#parameters">Economic parameters</a></li>
+        <li><a href="#sale-channels">Sale channels</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Functions</div>
+      <ul class="sidebar-links">
+        <li><a href="#mint">mint()</a></li>
+        <li><a href="#distribute">distributeRoyalties()</a></li>
+        <li><a href="#claim">claimRoyalties()</a></li>
+        <li><a href="#market-average">getMarketAverage()</a></li>
+        <li><a href="#view-functions">View functions</a></li>
+        <li><a href="#admin">Admin functions</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Guides</div>
+      <ul class="sidebar-links">
+        <li><a href="#guide-marketplace">Marketplace sale</a></li>
+        <li><a href="#guide-p2p">P2P sale</a></li>
+        <li><a href="#guide-claim">Claiming royalties</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Reference</div>
+      <ul class="sidebar-links">
+        <li><a href="#salerecord">SaleRecord</a></li>
+        <li><a href="#wei-ref">Wei reference</a></li>
+        <li><a href="#known-limitations">Known limitations</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="docs-content">
+
+    <section id="overview">
+      <h1>Technical <em>Documentation</em></h1>
+      <p>Cipolla Layer Zero — smart contract reference. Contract address: 0x33D2827fa39A49DC4De76467c93e58Bf9DE96072 — verified source code available on Basescan: <a href="https://basescan.org/address/0x33D2827fa39A49DC4De76467c93e58Bf9DE96072#code" target="_blank">https://basescan.org/address/0x33D2827fa39A49DC4De76467c93e58Bf9DE96072#code</a></p>
+
+      <h2>Contract overview</h2>
+      <table>
+        <thead><tr><th>Property</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Name</td><td>Cipolla Layer Zero</td></tr>
+          <tr><td>Symbol</td><td>CIPO</td></tr>
+          <tr><td>Standard</td><td>ERC721Enumerable + ERC2981</td></tr>
+          <tr><td>Network</td><td>Base L2</td></tr>
+          <tr><td>Compiler</td><td>Solidity 0.8.24 / EVM Shanghai / Optimizer 200</td></tr>
+          <tr><td>Libraries</td><td>OpenZeppelin v4.9.6</td></tr>
+          <tr><td>Max supply</td><td>250 tokens (fixed, immutable)</td></tr>
+          <tr><td>Prior art</td><td>INPI ASV-2026-PROVENANCE-ROYALTIES-001</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="parameters">
+      <h2>Economic parameters</h2>
+      <table>
+        <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Mint price</td><td>0.05 ETH (adjustable with 48h on-chain timelock)</td></tr>
+          <tr><td>Creator royalty</td><td>10% of msg.value on each distributeRoyalties() call</td></tr>
+          <tr><td>Holder pool</td><td>5% of msg.value, split equally among all unique historical owners</td></tr>
+          <tr><td>Total royalties</td><td>15% of declared sale price</td></tr>
+          <tr><td>Anti-wash trading</td><td>Each wallet address appears exactly once in any token's ownership history</td></tr>
+          <tr><td>Dust handling</td><td>Integer division remainders accumulate in dustReserve, withdrawable by creator</td></tr>
+          <tr><td>P2P price floor</td><td>max(seller's lowestPrice, 80% of getMarketAverage()), or mint price if no sale history exists</td></tr>
+          <tr><td>Market oracle</td><td>getMarketAverage(tokenId, k) — on-chain average of the last k coherent sales, used to prevent wash-trading via artificially low P2P prices</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="sale-channels">
+      <h2>Sale channels</h2>
+      <table>
+        <thead><tr><th>Value</th><th>Channel</th><th>Price verifiable?</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>Unknown</td><td>No</td></tr>
+          <tr><td>1</td><td>OpenSea</td><td>Yes — via OpenSea API</td></tr>
+          <tr><td>2</td><td>Foundation</td><td>Yes — via Foundation API</td></tr>
+          <tr><td>3</td><td>Blur</td><td>Yes — via Blur API</td></tr>
+          <tr><td>4</td><td>P2P</td><td>Yes — msg.value IS the price, cryptographically verified in an atomic transaction</td></tr>
+          <tr><td>5</td><td>Other</td><td>Depends</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="mint">
+      <h2>mint()</h2>
+      <pre><span class="keyword">function</span> mint() <span class="keyword">external payable</span></pre>
+      <p>Mints one token to the caller. The caller is immediately registered in the token's historical ownership record.</p>
+      <table>
+        <thead><tr><th>Condition</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td>msg.value</td><td>Must equal mintPrice exactly (currently 0.05 ETH)</td></tr>
+          <tr><td>mintActive</td><td>Must be true</td></tr>
+          <tr><td>paused</td><td>Must be false</td></tr>
+          <tr><td>Supply</td><td>Must not exceed MAX_SUPPLY (250)</td></tr>
+          <tr><td>Caller</td><td>Must not be contract owner (owner cannot mint public tokens)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="distribute">
+      <h2>distributeRoyalties()</h2>
+      <pre><span class="keyword">function</span> distributeRoyalties(
+  <span class="keyword">uint256</span> tokenId,
+  <span class="keyword">uint256</span> salePrice,
+  <span class="keyword">uint8</span>   channel
+) <span class="keyword">external payable</span></pre>
+      <p>Distributes royalties for a secondary sale. This function is used to distribute royalties to historical holders for sales made via third-party marketplaces.</p>
+
+      <h3>Parameters</h3>
+      <table>
+        <thead><tr><th>Parameter</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>tokenId</td><td>ID of the token that was sold (1–250)</td></tr>
+          <tr><td>salePrice</td><td>Declared sale price in wei. For marketplace sales: verifiable via API.</td></tr>
+          <tr><td>channel</td><td>Sale channel enum (0–5, see Sale channels)</td></tr>
+          <tr><td>msg.value</td><td>Must be exactly 15% of salePrice (salePrice × 15 / 100). Coherence is checked and recorded. Note: in V1 this function is restricted to the contract owner (onlyOwner) — for sales where distribution is atomic and trustless, use buyP2P() instead.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Authorization (v1.7)</h3>
+      <p>Restricted to the contract owner only (onlyOwner). This changed from v1.6, where any historical holder could call it, after a security audit identified a price-oracle manipulation vector — a holder could call this function repeatedly with an artificially low declared price to manipulate getMarketAverage() and lower the buyP2P() price floor.</p>
+
+      <h3>Distribution</h3>
+      <p>The current token holder is always excluded from this distribution — they cannot be paid royalties from a sale they are the recipient of.</p>
+      <pre><span class="comment">// msg.value = 0.15 ETH (15% of 1 ETH sale)</span>
+creatorShare = msg.value × 10 / 15  <span class="comment">// → 0.10 ETH → creatorWallet (immediate)</span>
+holderPool   = msg.value − creatorShare  <span class="comment">// → 0.05 ETH</span>
+<span class="comment">// eligibleCount excludes the current token holder (M-1 fix):</span>
+<span class="comment">// the current owner cannot be paid from their own incoming sale.</span>
+eligibleCount = holdersCount − 1 (if current holder has ever owned the token)
+              = holdersCount (otherwise)
+sharePerHolder = holderPool / eligibleCount  <span class="comment">// → split equally among eligible holders only</span>
+dust           = holderPool − (sharePerHolder × eligibleCount)  <span class="comment">// → dustReserve</span>
+<span class="comment">// If eligibleCount == 0 (the current holder is the only historical owner),</span>
+<span class="comment">// the entire holderPool is sent directly to dustReserve, since there is</span>
+<span class="comment">// no other holder eligible to receive it.</span></pre>
+
+      <div class="callout"><p><strong>P2P sales.</strong> buyP2P() handles everything atomically: the token transfer, the payment to the seller, and the royalty distribution all happen in a single transaction at the moment of purchase — no separate call is needed.</p></div>
+    </section>
+
+    <section id="claim">
+      <h2>claimRoyalties()</h2>
+      <pre><span class="keyword">function</span> claimRoyalties() <span class="keyword">external</span></pre>
+      <p>Transfers all accumulated royalties to the caller's wallet. Uses a pull payment pattern — royalties accumulate on-chain and must be claimed manually. There is no deadline to claim.</p>
+      <p><strong>Gas cost on Base: ~$0.01.</strong></p>
+      <p>Available via: <a href="/">cipollaprotocol.io</a> (connect wallet → Claim button) or directly on Basescan.</p>
+    </section>
+
+    <section id="market-average">
+      <h2>getMarketAverage()</h2>
+      <pre><span class="keyword">function</span> getMarketAverage(
+  <span class="keyword">uint256</span> tokenId,
+  <span class="keyword">uint256</span> k
+) <span class="keyword">external view returns</span> (<span class="keyword">uint256</span>)</pre>
+      <p>An internal oracle computing the average price of the last 5 sales where royaltiesSent is coherent with the declared sale price. This covers: (1) all buyP2P() transactions, which are atomic and fully verifiable on-chain — royaltiesCoherent is always true by design; (2) marketplace sales declared via distributeRoyalties(), where the owner verifies the exact sale price using public marketplace APIs (OpenSea, Blur, Foundation, etc.) and sends exactly 15% of that price as msg.value — making the declaration verifiable by anyone against the public on-chain transaction data of the marketplace.</p>
+      <p>This oracle is used as anti-wash-trading protection in buyP2P(), preventing an attacker from entering false holders into the ownership history at a derisory price, and illegitimately capturing the entire holder pool from genuine holders.</p>
+    </section>
+
+    <section id="view-functions">
+      <h2>View functions</h2>
+      <table>
+        <thead><tr><th>Function</th><th>Returns</th></tr></thead>
+        <tbody>
+          <tr><td>claimableRoyalties(address)</td><td>Amount of ETH claimable by a given address (wei)</td></tr>
+          <tr><td>getSaleHistory(tokenId)</td><td>Full array of SaleRecord structs for a token</td></tr>
+          <tr><td>getOwnerHistory(tokenId)</td><td>Array of all unique historical owner addresses</td></tr>
+          <tr><td>tokenURI(tokenId)</td><td>Full metadata URI (baseURI + tokenId)</td></tr>
+          <tr><td>royaltyInfo(tokenId, salePrice)</td><td>ERC-2981: (creatorWallet, 15% of salePrice)</td></tr>
+          <tr><td>totalSupply()</td><td>Number of tokens minted so far</td></tr>
+          <tr><td>mintPrice()</td><td>Current mint price in wei</td></tr>
+          <tr><td>totalPendingClaims()</td><td>Total ETH reserved for holder royalties</td></tr>
+          <tr><td>dustReserve()</td><td>Total dust accumulated from integer division</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="admin">
+      <h2>Admin functions (owner only)</h2>
+      <table>
+        <thead><tr><th>Function</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>setMintActive(bool)</td><td>Enable or disable minting</td></tr>
+          <tr><td>emergencyPause(reason)</td><td>Pause mint. Does NOT block transfers, claims, or royalty distribution. emergencyPause() suspends ONLY the mint() function — every other function (claimRoyalties(), buyP2P(), distributeRoyalties(), listForSale(), standard transfers) continues to work normally, even while paused. This is a deliberate guarantee: even if an issue is detected, holders' funds and rights remain accessible at all times and can never be frozen by the owner.</td></tr>
+          <tr><td>emergencyUnpause()</td><td>Resume from pause</td></tr>
+          <tr><td>schedulePriceChange(price, delay)</td><td>Schedule a mint price change. Minimum delay: 48 hours. Two levels of notification: an on-chain event is emitted immediately (publicly verifiable by anyone following the contract), and an announcement is also made on our official social media channels to inform the community in an accessible way.</td></tr>
+          <tr><td>cancelPriceChange()</td><td>Cancel a pending price change</td></tr>
+          <tr><td>setBaseURI(uri)</td><td>Update metadata URI. Used at reveal: setBaseURI("ipfs://CID_FINAL/")</td></tr>
+          <tr><td>setCreatorWallet(address)</td><td>Update the wallet that receives creator royalties</td></tr>
+          <tr><td>withdraw()</td><td>Withdraw mint proceeds. Only withdraws balance − totalPendingClaims − totalPendingWithdrawals − dustReserve. Holder funds and seller funds are always protected.</td></tr>
+          <tr><td>withdrawDust()</td><td>Withdraw accumulated dust from integer division remainders</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Note:</strong> transferOwnership() and renounceOwnership() are permanently disabled in V1 — ownership is fixed to the deploying address.</p>
+    </section>
+
+    <section id="guide-marketplace">
+      <h2>Guide — Marketplace sale</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-line"><div class="step-num">1</div><div class="step-connector"></div></div>
+          <div class="step-body"><div class="step-title">Token sold on marketplace</div><div class="step-desc">e.g. OpenSea, Foundation. The sale price is publicly visible on the marketplace.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-line"><div class="step-num">2</div><div class="step-connector"></div></div>
+          <div class="step-body"><div class="step-title">Marketplace sends 15% to creator address (ERC-2981)</div><div class="step-desc">The marketplace honors the royalty standard and forwards the creator's share automatically. Some marketplaces apply zero royalties, however, which in our view undermines the sustainability of this value-creation system — and this is precisely why atomic buyP2P() was developed as a recommended alternative.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-line"><div class="step-num">3</div><div class="step-connector"></div></div>
+          <div class="step-body"><div class="step-title">Call distributeRoyalties()</div><div class="step-desc">In V1, this function is restricted to the contract owner only (onlyOwner) — see Authorization (v1.7) above.<br/><code>distributeRoyalties(tokenId, salePrice_in_wei, 1)</code> + send 15% of salePrice as msg.value.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-line"><div class="step-num">4</div><div class="step-connector"></div></div>
+          <div class="step-body"><div class="step-title">Contract distributes automatically</div><div class="step-desc">10% → creatorWallet. 5% → recorded as claimable by all historical owners. For a P2P sale, distribution is atomic with the sale itself (buyP2P()). For a marketplace sale, this depends on the marketplace's royalty policy AND on action by the contract owner — a V1 limitation, which is why P2P is the recommended channel.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="guide-p2p">
+      <h2>Guide — P2P sale</h2>
+      <p>buyP2P() handles a peer-to-peer sale atomically, in a single transaction. The steps differ for the seller and the buyer.</p>
+      <h3>Seller</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-line"><div class="step-num">1</div><div class="step-connector"></div></div>
+          <div class="step-body"><div class="step-title">Call approve(contractAddress, tokenId)</div><div class="step-desc">Authorizes the contract to transfer the token on the seller's behalf.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-line"><div class="step-num">2</div><div class="step-connector"></div></div>
+          <div class="step-body"><div class="step-title">Call listForSale(tokenId, intendedBuyer, lowestPrice)</div><div class="step-desc">intendedBuyer can be 0x0000000000000000000000000000000000000000 for a sale open to anyone. lowestPrice is the optional minimum price set by the seller.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-line"><div class="step-num">3</div><div class="step-connector"></div></div>
+          <div class="step-body"><div class="step-title">Call withdrawSeller()</div><div class="step-desc">After the buyer has completed buyP2P(), your proceeds are credited to your address. Call withdrawSeller() to collect your funds. This pull payment pattern protects against gas griefing attacks via malicious receive() functions.</div></div>
+        </div>
+      </div>
+      <h3>Buyer</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-line"><div class="step-num">1</div><div class="step-connector"></div></div>
+          <div class="step-body"><div class="step-title">Call buyP2P(tokenId, sellerAddress)</div><div class="step-desc">Send the purchase price in ETH (msg.value). The contract automatically checks: the listing is active, the buyer matches intendedBuyer if one was specified, and the price respects both the lowestPrice AND the oracle floor — the price paid must be at least 80% of getMarketAverage(tokenId, 5) (i.e. it cannot fall more than 20% below the recent average of coherent sales), or the mint price if no sale history exists yet.</div></div>
+        </div>
+      </div>
+      <div class="callout"><p><strong>Atomic transaction.</strong> Everything happens in a single atomic transaction: token transfer + payment to the seller (85%) + distribution to historical holders (5%) + creator's share (10%), with no separate call required.</p></div>
+      <p><code>cancelListing(tokenId)</code> lets the seller cancel an active listing at any time.</p>
+      <div class="callout"><p><strong>Important.</strong> If a token listed on Cipolla is sold via an external marketplace (e.g. OpenSea) before buyP2P() is called, the Cipolla listing automatically becomes stale and invalid (it is automatically invalidated on any transfer of the token) — a new listing must be created if the seller wants to offer the token via buyP2P() again.</p></div>
+    </section>
+
+    <section id="guide-claim">
+      <h2>Guide — Claiming royalties</h2>
+      <p>Royalties accumulate on-chain in your personal balance. There is no deadline — claim whenever you wish.</p>
+      <h3>Option A — via cipollaprotocol.io</h3>
+      <p>Go to the Dashboard → connect your wallet → click <strong>Claim royalties</strong>. Gas cost on Base: ~$0.01.</p>
+      <h3>Option B — directly on Basescan</h3>
+      <p>Go to the contract on Basescan → Write Contract → Connect wallet → call <code>claimRoyalties()</code>.</p>
+      <h3>Check your balance first</h3>
+      <pre><span class="comment">// Read-only, no gas needed</span>
+claimableRoyalties(<span class="string">"0xYourAddress"</span>) <span class="comment">// → returns wei</span></pre>
+    </section>
+
+    <section id="salerecord">
+      <h2>SaleRecord struct</h2>
+      <p>Each call to distributeRoyalties() records a SaleRecord on-chain, permanently visible on Basescan and via getSaleHistory().</p>
+      <table>
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>timestamp</td><td>Block timestamp of the distribution</td></tr>
+          <tr><td>caller</td><td>Address that called distributeRoyalties()</td></tr>
+          <tr><td>salePriceDeclared</td><td>Declared sale price in wei</td></tr>
+          <tr><td>royaltiesSent</td><td>For P2P sales: salePrice × 15%. For marketplace declarations: msg.value</td></tr>
+          <tr><td>holderPool</td><td>5% allocated to historical owners</td></tr>
+          <tr><td>creatorShare</td><td>10% sent to creatorWallet</td></tr>
+          <tr><td>holdersCount</td><td>Number of historical owners at time of distribution</td></tr>
+          <tr><td>royaltiesCoherent</td><td>true if royalties are coherent with the declared sale price</td></tr>
+          <tr><td>channel</td><td>Sale channel enum (0–5)</td></tr>
+          <tr><td>priceVerifiable</td><td>true if marketplace sale (price publicly verifiable)</td></tr>
+          <tr><td>priceDiff</td><td>Difference vs previous declared price</td></tr>
+          <tr><td>priceIncreased</td><td>true if price increased vs previous sale</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="wei-ref">
+      <h2>Wei reference</h2>
+      <table>
+        <thead><tr><th>ETH</th><th>Wei</th></tr></thead>
+        <tbody>
+          <tr><td>0.05 ETH (mint price)</td><td>50,000,000,000,000,000</td></tr>
+          <tr><td>0.15 ETH (15% of 1 ETH)</td><td>150,000,000,000,000,000</td></tr>
+          <tr><td>0.10 ETH (10% of 1 ETH)</td><td>100,000,000,000,000,000</td></tr>
+          <tr><td>0.05 ETH (5% of 1 ETH)</td><td>50,000,000,000,000,000</td></tr>
+          <tr><td>1 ETH</td><td>1,000,000,000,000,000,000</td></tr>
+          <tr><td>48h in seconds</td><td>172,800</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="known-limitations">
+      <h2>Known limitations</h2>
+      <p>1. Marketplace buyers are not added to the ownership history and do not benefit from future royalty distributions. This restriction is linked to wash trading risk. Wash trading directly harms genuine holders: it allows a bad actor to illegitimately capture the entire holder pool of a sale, effectively stealing from everyone else in the ownership history. To enter the ownership history and benefit from future distributions as well as the atomicity of the transaction, we recommend using the buyP2P() function.</p>
+      <p>2. Marketplace sales are declared manually by the contract owner (a restriction implemented following an external security audit to prevent wash trading). Each declared marketplace sale is verifiable: the dashboard displays the on-chain proof of the marketplace sale price used to feed the oracle's calculation base. Historical holders of a token sold on a marketplace benefit from the distribution via this mechanism.</p>
+      <p>3. Royalty distribution for marketplace sales requires a manual call to distributeRoyalties() by the contract owner (onlyOwner restriction — see Authorization (v1.7) above).</p>
+      <p>4. Risk mitigation plan: no protocol can guarantee 100% absence of risk. Should the protocol gain meaningful traction, we plan to design V2 around a burn-and-migrate mechanism: holders voluntarily burn their V1 token to mint an equivalent V2 token, with ownership history reconstructed from V1's public on-chain record. This allows the protocol to evolve toward greater decentralization, including wash-trading prevention mechanisms currently in research, without forcing any holder to migrate, and without losing the provenance already established.</p>
+    </section>
+
+    <section id="faq">
+      <h2>FAQ</h2>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is this an investment?</div>
+        <div class="faq-a">No. This is an economic experimentation. Any potential value depends entirely on the secondary market. No returns are guaranteed.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Can royalties be blocked or stolen?</div>
+        <div class="faq-a">No. The contract maintains a totalPendingClaims counter that tracks all ETH owed to holders. The owner's withdraw() function is mathematically blocked from touching this amount. It is impossible by contract design — not just by policy.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">What happens if I buy and resell the same token multiple times?</div>
+        <div class="faq-a">Each wallet address appears exactly once in the ownership history of a token, regardless of how many times it buys and resells. You receive one equal share of the holder pool on every future distribution — no more, no less. This prevents wash trading.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">What is the reveal?</div>
+        <div class="faq-a">During the mint, all tokens display a placeholder image. 30 days after the mint opens, the creator calls setBaseURI() to point all tokens to their final images. At the same time, the generation seed is publicly revealed, allowing anyone to verify the intruder positions were determined before any mint occurred.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">How do I verify the intruder positions were not manipulated?</div>
+        <div class="faq-a">Before the mint, we published the SHA-256 hash of our seed phrase: c0c2663a44d7998cef3140261b53744468d714c975809f7e11161a11bd8e1747. At reveal, we publish the seed itself. Anyone can compute SHA-256(seed) and verify it matches the published hash, then run our open-source placement algorithm to confirm the intruder positions in the collection.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">What if there is a critical bug after deployment?</div>
+        <div class="faq-a">Cipolla Protocol has been seriously audited by an independent security researcher, with a public mitigation report and verified source code available on Basescan.<br/><br/>Our position reflects a core conviction: no centralization, no dependency on external governance — just code. This means there is no admin function to pause claims, reverse transactions, or freeze funds in the contract once deployed and active.<br/><br/>This is a deliberate trade-off. Even the largest, most heavily audited protocols in DeFi have suffered exploits. For this reason, V1 is intentionally limited — a small, experimental collection (250 tokens at 0.05 ETH) designed to test the technical and economic viability of the Provenance Royalties model before any larger deployment.<br/><br/>We recommend all holders monitor their claimable royalties and withdraw them regularly, rather than letting them accumulate over long periods.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is there a deadline to claim royalties?</div>
+        <div class="faq-a">No. Your royalty balance accumulates on-chain indefinitely. Claim whenever you wish — in one transaction or let it accumulate over time.</div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© Anastasia Smirnova Vincent, 2026 · Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001 · Code: MIT</span>
+    <div class="footer-links">
+      <a href="https://x.com/cipollaprotocol">X</a>
+      <a href="https://discord.gg/cipollaprotocol">Discord</a>
+      <a href="mailto:contact@cipollaprotocol.io">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleFaq(el){ el.classList.toggle('open'); }
+
+// Sidebar active link on scroll
+const sections = document.querySelectorAll('section[id]');
+const sideLinks = document.querySelectorAll('.sidebar-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if(window.scrollY >= s.offsetTop - 80) current = s.id; });
+  sideLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+current));
+});
+</script>
+</body>
+</html>

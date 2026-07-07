@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Prototype — Cipolla Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;--bg2:#141414;--bg3:#1a1a1a;
+  --border:#2a2a2a;--gold:#c9a84c;--gold2:#e8c96a;
+  --sage:#7a9e8e;--copper:#b87333;
+  --text:#e8e4dc;--text2:#9a9490;--text3:#5a5650;
+  --s1:#4a6741;--s2:#7a6432;--s3:#6b5a2a;--s4:#4a5a6b;--s5:#3a4a5a;
+  --intruder:#c9a84c;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-weight:300;font-size:15px;line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,13,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-family:'Fraunces',serif;font-size:1.1rem;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.875rem;letter-spacing:0.04em;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+
+main{max-width:1200px;margin:0 auto;padding:80px 2rem 60px}
+
+.page-header{padding:40px 0 32px;border-bottom:1px solid var(--border);margin-bottom:40px}
+.page-header-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:0.75rem}
+.page-header h1{font-family:'Fraunces',serif;font-size:1.75rem;font-weight:300;color:var(--text)}
+.page-header h1 em{font-style:italic;color:var(--gold)}
+.page-header p{color:var(--text2);margin-top:0.75rem;max-width:600px;font-size:0.95rem}
+
+/* LAYOUT 2 COLS */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+
+/* GRID SECTION */
+.grid-section{}
+.grid-legend{display:flex;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem}
+.legend-item{display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:var(--text2)}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+.nft-grid{display:grid;grid-template-columns:repeat(25,1fr);gap:3px;margin-bottom:1rem}
+.nft-cell{aspect-ratio:1;border-radius:2px;cursor:pointer;transition:transform 0.15s,opacity 0.15s;position:relative;border:1px solid transparent}
+.nft-cell:hover{transform:scale(1.3);z-index:10}
+.nft-cell.empty{background:var(--bg3);border-color:var(--border)}
+.nft-cell.s1{background:var(--s1)}
+.nft-cell.s2{background:var(--s2)}
+.nft-cell.s3{background:var(--s3)}
+.nft-cell.s4{background:var(--s4)}
+.nft-cell.s5{background:var(--s5)}
+.nft-cell.creator{background:rgba(201,168,76,0.3);border-color:var(--gold)}
+.nft-cell.intruder{background:var(--intruder)!important;border-color:var(--gold2)!important}
+.nft-cell.intruder::after{content:'★';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:5px;color:#0d0d0d}
+
+.grid-counter{text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text3);margin-bottom:1rem}
+.grid-counter span{color:var(--text);font-size:1rem}
+
+.cell-tooltip{position:fixed;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text);pointer-events:none;z-index:1000;display:none;white-space:nowrap}
+
+/* SIMULATOR */
+.sim-section{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.75rem;position:sticky;top:72px}
+.sim-title{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:300;color:var(--text);margin-bottom:0.5rem}
+.sim-sub{font-size:0.8rem;color:var(--text3);margin-bottom:1.5rem;line-height:1.5}
+
+.sim-input-group{margin-bottom:1.25rem}
+.sim-label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:0.4rem}
+.sim-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:0.6rem 0.875rem;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.9rem;outline:none}
+.sim-input:focus{border-color:var(--gold)}
+.sim-range{width:100%;accent-color:var(--gold);margin-top:0.5rem}
+
+.sim-result{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:1.25rem;margin-top:1.25rem}
+.sim-row{display:flex;justify-content:space-between;align-items:baseline;padding:0.4rem 0;border-bottom:1px solid rgba(42,42,42,0.5)}
+.sim-row:last-child{border-bottom:none}
+.sim-row-label{font-size:0.82rem;color:var(--text2)}
+.sim-row-value{font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--text)}
+.sim-row-value.gold{color:var(--gold)}
+.sim-row-value.sage{color:var(--sage)}
+.sim-row-value.dim{color:var(--text3)}
+
+.sim-breakdown{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+.sim-breakdown-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:0.75rem}
+.sim-holder-row{display:flex;justify-content:space-between;padding:0.3rem 0;font-size:0.8rem}
+.sim-holder-row span:first-child{color:var(--text3)}
+.sim-holder-row span:last-child{font-family:'JetBrains Mono',monospace;color:var(--sage)}
+
+.sim-note{margin-top:1.25rem;padding:0.875rem 1rem;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.15);border-radius:4px}
+.sim-note p{font-size:0.78rem;color:var(--text3);line-height:1.6;margin:0}
+.sim-note strong{color:var(--text2)}
+
+/* ACTIVITY FEED */
+.activity-section{margin-top:48px}
+.activity-title{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:300;color:var(--text);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)}
+.activity-feed{display:flex;flex-direction:column;gap:0.5rem;max-height:300px;overflow-y:auto}
+.activity-item{display:flex;gap:1rem;align-items:center;padding:0.6rem 0.875rem;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:0.82rem}
+.activity-num{font-family:'JetBrains Mono',monospace;color:var(--gold);flex-shrink:0;width:32px}
+.activity-text{color:var(--text2);flex:1}
+.activity-time{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text3);flex-shrink:0}
+.activity-empty{color:var(--text3);font-size:0.875rem;padding:1rem 0;text-align:center}
+
+footer{border-top:1px solid var(--border);padding:2rem;margin-top:60px}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-copy{font-size:0.8rem;color:var(--text3)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:0.8rem;color:var(--text3);text-decoration:none}
+.footer-links a:hover{color:var(--text2)}
+
+@media(max-width:900px){
+  .two-col{grid-template-columns:1fr}
+  .sim-section{position:static}
+  .nft-grid{grid-template-columns:repeat(25,1fr)}
+}
+</style>
+<link rel="icon" href="/cipolla_favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/cipolla_favicon_512.png"/>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+   <a href="/" class="nav-logo"><img src="/cipolla_favicon_32.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"/>Cipolla Protocol</a>
+    <ul class="nav-links">
+      <li><a href="/about">About</a></li>
+      <li><a href="/docs">Docs</a></li>
+      <li><a href="/prototype" class="active">Prototype</a></li>
+      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/mint">Mint</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="cell-tooltip" id="tooltip"></div>
+
+<main>
+  <div class="page-header">
+    <p class="page-header-eyebrow">Interactive prototype</p>
+    <h1>See the mechanism <em>live.</em></h1>
+    <p>250 cells — one per NFT. Hover to identify each token. Use the simulator to understand how royalties distribute across historical owners on any resale.</p>
+  </div>
+
+  <div class="two-col">
+
+    <!-- LEFT: GRID -->
+    <div class="grid-section">
+      <div class="grid-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(201,168,76,0.4);border:1px solid var(--gold)"></div>Genesis Seed #1</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--s1)"></div>Genesis Core</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--s2)"></div>Inner Layer</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--s3)"></div>Middle Layer</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--s4)"></div>Outer Layer</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--s5)"></div>Surface Layer</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--intruder)"></div>★ Intruder (post-reveal)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--bg3);border:1px solid var(--border)"></div>Not minted</div>
+      </div>
+
+      <div class="grid-counter"><span id="mintedCount">—</span> / 249 public tokens minted</div>
+
+      <div class="nft-grid" id="nftGrid"></div>
+
+      <div class="activity-section">
+        <div class="activity-title">Founding Nodes.</div>
+        <p style="color:var(--text2);font-size:0.875rem;line-height:1.75;margin-bottom:1rem">The 249 addresses that mint directly from the Layer Zero contract are the protocol's Founding Nodes — permanently, regardless of whether they later sell their token.</p>
+        <p style="color:var(--text2);font-size:0.875rem;line-height:1.75;margin-bottom:1rem">Founding Node status is tied to the act of minting, not to holding. It cannot be transferred, lost, or revoked. Like the Provenance Royalties mechanism itself, early participation creates permanent rights.</p>
+        <p style="color:var(--text2);font-size:0.875rem;line-height:1.75;margin-bottom:0.5rem">As a Founding Node :</p>
+        <p style="color:var(--text2);font-size:0.875rem;line-height:1.75;margin-bottom:0.25rem">→ Access to a private Discord channel with the Cipolla Protocol team on future development directions</p>
+        <p style="color:var(--text2);font-size:0.875rem;line-height:1.75;margin-bottom:0.25rem">→ Priority mint window for future collections — before public opening</p>
+        <p style="color:var(--text2);font-size:0.875rem;line-height:1.75;margin-bottom:1rem">→ Option to participate in any future governance mechanism — at your discretion, no obligation</p>
+        <p style="color:var(--text3);font-size:0.8rem;font-style:italic">Public intentions, not contractual commitments. No financial returns guaranteed.</p>
+      </div>
+
+      <div class="activity-section">
+        <div class="activity-title">The 5 intruders.</div>
+        <p style="color:var(--text2);font-size:0.875rem;line-height:1.75;margin-bottom:1rem">Hidden within the 250 tokens, 5 rare intruder tokens carry a special identity — revealed 30 days after mint opens.</p>
+        <p style="color:var(--text2);font-size:0.875rem;line-height:1.75;margin-bottom:0.75rem">Their positions were determined before deployment using a provably fair commit-reveal mechanism. The seed hash is public and immutable:</p>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--gold);word-break:break-all;margin-bottom:1rem">c0c2663a44d7998cef3140261b53744468d714c975809f7e11161a11bd8e1747</p>
+        <p style="color:var(--text2);font-size:0.875rem;line-height:1.75">Intruder tokens carry a unique identity within the collection. Their rarity (5 out of 250) and narrative role within the Cipolla universe make them a distinct position in the ownership history.</p>
+      </div>
+
+      <div class="activity-section">
+        <div class="activity-title">Recent mints & activity</div>
+        <div class="activity-feed" id="activityFeed">
+          <div class="activity-empty">Loading activity…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIMULATOR -->
+    <div class="sim-section">
+      <div class="sim-title">Royalty simulator</div>
+      <div class="sim-sub">Enter a resale price and number of historical owners to see how royalties distribute. This is a simulation — see note below.</div>
+
+      <div class="sim-input-group">
+        <label class="sim-label">Resale price (ETH)</label>
+        <input class="sim-input" type="number" id="simPrice" value="1" min="0.001" step="0.01" oninput="simulate()"/>
+      </div>
+
+      <div class="sim-input-group">
+        <label class="sim-label">Number of historical owners: <span id="ownersLabel">3</span></label>
+        <input class="sim-range" type="range" id="simOwners" min="1" max="20" value="3" oninput="simulate()"/>
+      </div>
+
+      <div class="sim-result" id="simResult"></div>
+
+      <div class="sim-note">
+        <p><strong>Note on this simulation.</strong> For P2P sales via buyP2P(): the transaction is atomic — payment, token transfer, and royalty distribution happen in a single on-chain operation. Either everything executes or nothing does. Royalties are calculated directly from msg.value, making the distribution exact and trustless.<br/><br/>For marketplace sales: many marketplaces apply zero-royalty policies, undermining the value chain Provenance Royalties is designed to protect. Marketplace buyers are NOT added to the ownership history and receive no future royalties. Existing holders still receive their share via distributeRoyalties() — called manually by the contract owner (restricted after an external audit to prevent wash trading).<br/><br/>Use this to understand the mechanism, not as a precise financial calculator.</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© Anastasia Smirnova Vincent, 2026 · Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001</span>
+    <div class="footer-links">
+      <a href="https://x.com/cipollaprotocol">X</a>
+      <a href="https://discord.gg/cipollaprotocol">Discord</a>
+      <a href="mailto:contact@cipollaprotocol.io">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────
+const RPC_URL = "https://mainnet.base.org";
+const CONTRACT_ADDRESS = "0x33D2827fa39A49DC4De76467c93e58Bf9DE96072";
+const REVEALED = false; // → set true after reveal
+
+const STRATA = [
+  {name:"Genesis Seed",cls:"creator",start:1,end:1},
+  {name:"Genesis Core",cls:"s1",start:2,end:11},
+  {name:"Inner Layer",cls:"s2",start:12,end:51},
+  {name:"Middle Layer",cls:"s3",start:52,end:151},
+  {name:"Outer Layer",cls:"s4",start:152,end:230},
+  {name:"Surface Layer",cls:"s5",start:231,end:250},
+];
+const INTRUDERS = {4:"Cipollino",29:"Cipo",72:"Cipella",217:"Cipello",236:"Cipa"};
+
+const ABI = [
+  "function totalSupply() view returns (uint256)",
+  "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
+];
+
+let mintedSet = new Set();
+let provider, contract;
+
+// ── GRID ──────────────────────────────────────────────────────────
+function buildGrid(){
+  const grid = document.getElementById('nftGrid');
+  grid.innerHTML = '';
+  for(let id = 1; id <= 250; id++){
+    const cell = document.createElement('div');
+    const strata = getStrata(id);
+    const isMinted = mintedSet.has(id);
+    const isIntruder = INTRUDERS[id];
+
+    if(!isMinted){
+      cell.className = 'nft-cell empty';
+    } else if(REVEALED && isIntruder){
+      cell.className = 'nft-cell intruder';
+    } else {
+      cell.className = 'nft-cell ' + strata.cls;
+    }
+
+    cell.addEventListener('mouseenter', (e) => showTooltip(e, id, strata, isIntruder, isMinted));
+    cell.addEventListener('mousemove', moveTooltip);
+    cell.addEventListener('mouseleave', hideTooltip);
+    grid.appendChild(cell);
+  }
+}
+
+function getStrata(id){
+  for(const s of STRATA){ if(id >= s.start && id <= s.end) return s; }
+  return STRATA[0];
+}
+
+function showTooltip(e, id, strata, intruder, minted){
+  const tip = document.getElementById('tooltip');
+  let text;
+  if(!REVEALED){
+    text = `#${id} — Unrevealed — ${minted ? 'minted' : 'Available'}`;
+  } else {
+    text = `#${id} — ${strata.name}`;
+    if(id === 1) text += ' (creator)';
+    if(intruder) text += ` · ★ ${intruder}`;
+    text += minted ? ' · minted' : ' · available';
+  }
+  tip.textContent = text;
+  tip.style.display = 'block';
+  moveTooltip(e);
+}
+function moveTooltip(e){ const t=document.getElementById('tooltip'); t.style.left=(e.clientX+12)+'px'; t.style.top=(e.clientY-28)+'px'; }
+function hideTooltip(){ document.getElementById('tooltip').style.display='none'; }
+
+// ── BLOCKCHAIN ────────────────────────────────────────────────────
+async function init(){
+  try {
+    provider = new ethers.JsonRpcProvider(RPC_URL);
+    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+
+    // Load current supply
+    const supply = await contract.totalSupply();
+    // Approximate: tokens 1..totalSupply are minted
+    for(let i = 1; i <= Number(supply); i++) mintedSet.add(i);
+
+    document.getElementById('mintedCount').textContent = Math.max(0, Number(supply) - 1); // exclude #1 creator
+    buildGrid();
+
+    // Listen for Transfer events (new mints = from 0x0)
+    provider.on({address: CONTRACT_ADDRESS, topics: [ethers.id("Transfer(address,address,uint256)")]}, (log) => {
+      try {
+        const iface = new ethers.Interface(["event Transfer(address indexed from,address indexed to,uint256 indexed tokenId)"]);
+        const decoded = iface.parseLog(log);
+        const tokenId = Number(decoded.args.tokenId);
+        const from = decoded.args.from;
+        const to = decoded.args.to;
+        if(from === ethers.ZeroAddress){
+          // mint
+          mintedSet.add(tokenId);
+          document.getElementById('mintedCount').textContent = mintedSet.size - 1;
+          buildGrid();
+          addActivity(tokenId, to, 'minted');
+        } else {
+          addActivity(tokenId, to, 'transferred');
+        }
+      } catch(e){}
+    });
+
+    loadActivity();
+  } catch(e){
+    console.error(e);
+    buildGrid(); // show empty grid if no connection
+  }
+}
+
+async function loadActivity(){
+  const feed = document.getElementById('activityFeed');
+  try {
+    const filter = {
+      address: CONTRACT_ADDRESS,
+      topics: [ethers.id("Transfer(address,address,uint256)"), ethers.zeroPadValue(ethers.ZeroAddress, 32)],
+      fromBlock: -2000,
+      toBlock: 'latest'
+    };
+    const logs = await provider.getLogs(filter);
+    if(!logs.length){ feed.innerHTML = '<div class="activity-empty">No mints yet — be the first.</div>'; return; }
+    const iface = new ethers.Interface(["event Transfer(address indexed from,address indexed to,uint256 indexed tokenId)"]);
+    const items = logs.slice(-10).reverse().map(log => {
+      const d = iface.parseLog(log);
+      const id = Number(d.args.tokenId);
+      const to = d.args.to;
+      return `<div class="activity-item"><span class="activity-num">#${id}</span><span class="activity-text">${getStrata(id).name} — minted by ${shortAddr(to)}</span></div>`;
+    });
+    feed.innerHTML = items.join('');
+  } catch(e){
+    feed.innerHTML = '<div class="activity-empty">Activity feed unavailable.</div>';
+  }
+}
+
+function addActivity(tokenId, addr, action){
+  const feed = document.getElementById('activityFeed');
+  const empty = feed.querySelector('.activity-empty');
+  if(empty) empty.remove();
+  const item = document.createElement('div');
+  item.className = 'activity-item';
+  item.innerHTML = `<span class="activity-num">#${tokenId}</span><span class="activity-text">${getStrata(tokenId).name} — ${action} by ${shortAddr(addr)}</span><span class="activity-time">just now</span>`;
+  feed.insertBefore(item, feed.firstChild);
+  if(feed.children.length > 20) feed.lastChild.remove();
+}
+
+function shortAddr(a){ return a ? a.slice(0,6)+'…'+a.slice(-4) : '—'; }
+
+// ── SIMULATOR ─────────────────────────────────────────────────────
+function simulate(){
+  const price = parseFloat(document.getElementById('simPrice').value) || 0;
+  const owners = parseInt(document.getElementById('simOwners').value) || 1;
+  document.getElementById('ownersLabel').textContent = owners;
+
+  const royaltiesTotal = price * 0.15;
+  const creatorShare = price * 0.10;
+  const holderPool = price * 0.05;
+  const perHolder = holderPool / owners;
+  const seller = price * 0.85;
+
+  let breakdown = '';
+  const maxShow = Math.min(owners, 6);
+  for(let i = 1; i <= maxShow; i++){
+    breakdown += `<div class="sim-holder-row"><span>Historical owner ${i}</span><span>${perHolder.toFixed(6)} ETH</span></div>`;
+  }
+  if(owners > 6) breakdown += `<div class="sim-holder-row"><span>+ ${owners-6} more owners</span><span>${perHolder.toFixed(6)} ETH each</span></div>`;
+
+  document.getElementById('simResult').innerHTML = `
+    <div class="sim-row"><span class="sim-row-label">Resale price</span><span class="sim-row-value">${price.toFixed(4)} ETH</span></div>
+    <div class="sim-row"><span class="sim-row-label">Seller receives</span><span class="sim-row-value dim">${seller.toFixed(4)} ETH</span></div>
+    <div class="sim-row"><span class="sim-row-label">Total royalties (15%)</span><span class="sim-row-value">${royaltiesTotal.toFixed(4)} ETH</span></div>
+    <div class="sim-row"><span class="sim-row-label">→ Creator (10%)</span><span class="sim-row-value gold">${creatorShare.toFixed(4)} ETH</span></div>
+    <div class="sim-row"><span class="sim-row-label">→ Holder pool (5%)</span><span class="sim-row-value sage">${holderPool.toFixed(4)} ETH</span></div>
+    <div class="sim-breakdown">
+      <div class="sim-breakdown-title">Per holder (${owners} historical owner${owners>1?'s':''})</div>
+      ${breakdown}
+    </div>
+  `;
+}
+
+init();
+simulate();
+</script>
+</body>
+</html>

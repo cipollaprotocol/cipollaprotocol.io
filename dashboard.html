@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Dashboard — Cipolla Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;--bg2:#141414;--bg3:#1a1a1a;
+  --border:#2a2a2a;--gold:#c9a84c;--gold2:#e8c96a;
+  --sage:#7a9e8e;--text:#e8e4dc;--text2:#9a9490;--text3:#5a5650;
+  --red:#c0392b;--green:#4a8c6a;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-weight:300;font-size:15px;line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,13,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-family:'Fraunces',serif;font-size:1.1rem;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.875rem;letter-spacing:0.04em;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+.nav-status{display:flex;align-items:center;gap:0.5rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text3)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:none}
+.status-dot.live{background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+main{max-width:1200px;margin:0 auto;padding:80px 2rem 60px}
+
+/* PAGE HEADER */
+.page-header{padding:40px 0 32px;border-bottom:1px solid var(--border);margin-bottom:32px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem}
+.page-header h1{font-family:'Fraunces',serif;font-size:1.75rem;font-weight:300;color:var(--text)}
+.page-header h1 em{font-style:italic;color:var(--gold)}
+.network-badge{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;padding:0.3rem 0.75rem;border:1px solid var(--border);border-radius:3px;color:var(--text2)}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:32px}
+.stat-card{background:var(--bg2);padding:1.5rem;text-align:center}
+.stat-label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:0.5rem}
+.stat-value{font-family:'Fraunces',serif;font-size:1.75rem;font-weight:300;color:var(--text);line-height:1}
+.stat-sub{font-size:0.75rem;color:var(--text3);margin-top:0.4rem}
+.stat-value.gold{color:var(--gold)}
+.stat-value.sage{color:var(--sage)}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.tab{padding:0.75rem 1.25rem;font-size:0.85rem;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* TABLES */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);padding:0.6rem 1rem;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.data-table td{padding:0.75rem 1rem;border-bottom:1px solid rgba(42,42,42,0.5);font-size:0.875rem;vertical-align:middle}
+.data-table tr:hover td{background:rgba(255,255,255,0.015)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:0.8rem}
+.badge{display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.5rem;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.05em}
+.badge-ok{background:rgba(74,140,106,0.15);color:var(--green);border:1px solid rgba(74,140,106,0.25)}
+.badge-warn{background:rgba(192,57,43,0.1);color:var(--red);border:1px solid rgba(192,57,43,0.2)}
+.badge-channel{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2)}
+.addr{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text2)}
+.addr-short{}
+
+/* TOKEN GRID */
+.token-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.token-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:1.25rem;cursor:pointer;transition:border-color 0.2s}
+.token-card:hover{border-color:var(--gold)}
+.token-card.selected{border-color:var(--gold);background:rgba(201,168,76,0.04)}
+.token-num{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text3);margin-bottom:0.3rem}
+.token-layer{font-size:0.85rem;color:var(--text);margin-bottom:0.75rem}
+.token-stats{display:flex;flex-direction:column;gap:0.25rem}
+.token-stat{display:flex;justify-content:space-between;font-size:0.78rem}
+.token-stat span:first-child{color:var(--text3)}
+.token-stat span:last-child{color:var(--text2);font-family:'JetBrains Mono',monospace}
+
+/* TOKEN DETAIL */
+.token-detail{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-top:1.5rem;display:none}
+.token-detail.visible{display:block}
+.detail-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem}
+.detail-title{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:300;color:var(--text)}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.detail-item label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:0.25rem}
+.detail-item span{font-size:0.9rem;color:var(--text2);font-family:'JetBrains Mono',monospace}
+
+/* HOLDER VIEW */
+.wallet-input-row{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.wallet-input{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:0.6rem 1rem;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.85rem;outline:none}
+.wallet-input:focus{border-color:var(--gold)}
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.6rem 1.25rem;border-radius:4px;font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.2s;border:none;font-family:'Inter',sans-serif}
+.btn-primary{background:var(--gold);color:#0d0d0d}
+.btn-primary:hover{background:var(--gold2)}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--text)}
+.holder-summary{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:1.5rem}
+.holder-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.h-stat label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:0.4rem}
+.h-stat span{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:300;color:var(--text)}
+.h-stat span.gold{color:var(--gold)}
+.claim-row{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.claimable-amount{font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--gold)}
+
+/* LOADING / EMPTY */
+.loading{text-align:center;padding:3rem;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.8rem}
+.loading::after{content:'...';animation:dots 1.5s infinite}
+@keyframes dots{0%,100%{content:'...'}33%{content:'.'}66%{content:'..'}}}
+.empty{text-align:center;padding:2rem;color:var(--text3);font-size:0.875rem}
+
+/* REFRESH */
+.refresh-bar{display:flex;justify-content:flex-end;align-items:center;gap:1rem;margin-bottom:1rem}
+.last-updated{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text3)}
+
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-copy{font-size:0.8rem;color:var(--text3)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:0.8rem;color:var(--text3);text-decoration:none}
+.footer-links a:hover{color:var(--text2)}
+
+@media(max-width:768px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .detail-grid{grid-template-columns:1fr}
+  .holder-stats{grid-template-columns:1fr}
+  .token-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+}
+</style>
+<link rel="icon" href="/cipolla_favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/cipolla_favicon_512.png"/>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+   <a href="/" class="nav-logo"><img src="/cipolla_favicon_32.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"/>Cipolla Protocol</a>
+    <ul class="nav-links">
+      <li><a href="/about">About</a></li>
+      <li><a href="/docs">Docs</a></li>
+      <li><a href="/prototype">Prototype</a></li>
+      <li><a href="/dashboard" class="active">Dashboard</a></li>
+      <li><a href="/mint">Mint</a></li>
+    </ul>
+    <div class="nav-status">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusLabel">connecting</span>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="page-header">
+    <div>
+      <h1>Collection <em>Dashboard</em></h1>
+      <p style="color:var(--text2);font-size:0.875rem;margin-top:0.4rem">Live data from Base — updated in real time</p>
+    </div>
+    <span class="network-badge" id="networkBadge">Base</span>
+  </div>
+
+  <!-- GLOBAL STATS -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card"><div class="stat-label">Tokens minted</div><div class="stat-value" id="statMinted">—</div><div class="stat-sub" id="statMintedSub">of 249 public</div></div>
+    <div class="stat-card"><div class="stat-label">Volume total</div><div class="stat-value gold" id="statVolume">—</div><div class="stat-sub">ETH declared</div></div>
+    <div class="stat-card"><div class="stat-label">Royalties distributed</div><div class="stat-value sage" id="statRoyalties">—</div><div class="stat-sub">ETH total</div></div>
+    <div class="stat-card"><div class="stat-label">Unique holders</div><div class="stat-value" id="statHolders">—</div><div class="stat-sub">wallets</div></div>
+    <div class="stat-card"><div class="stat-label">Mint price</div><div class="stat-value" id="statPrice">—</div><div class="stat-sub">ETH</div></div>
+    <div class="stat-card"><div class="stat-label">Contract balance</div><div class="stat-value" id="statBalance">—</div><div class="stat-sub">ETH held</div></div>
+  </div>
+
+  <div class="refresh-bar">
+    <span class="last-updated" id="lastUpdated">—</span>
+    <button class="btn btn-ghost" onclick="refreshAll()" style="padding:0.4rem 0.9rem;font-size:0.8rem">↻ Refresh</button>
+  </div>
+
+  <!-- LISTINGS P2P -->
+  <div class="section-block" style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:24px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem">Tokens listed for P2P sale</div>
+    <div id="listingsTable"><div class="loading">Loading listings</div></div>
+  </div>
+
+  <!-- ORACLE SALES -->
+  <div class="section-block" style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:24px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:0.5rem">Oracle — Declared marketplace sales</div>
+    <div style="font-size:0.8rem;color:var(--text3);margin-bottom:1rem;line-height:1.5">Each declared sale is verifiable against public marketplace data. The contract owner declares the exact sale price and sends exactly 15% as msg.value.</div>
+    <div id="oracleTable"><div class="loading">Loading oracle sales</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('sales')">Sale history</button>
+    <button class="tab" onclick="switchTab('tokens')">By token</button>
+    <button class="tab" onclick="switchTab('holder')">My royalties</button>
+  </div>
+
+  <!-- TAB: SALE HISTORY -->
+  <div class="tab-panel active" id="tab-sales">
+    <div id="salesTable"><div class="loading">Loading sale history</div></div>
+  </div>
+
+  <!-- TAB: BY TOKEN -->
+  <div class="tab-panel" id="tab-tokens">
+    <div class="token-grid" id="tokenGrid"><div class="loading">Loading tokens</div></div>
+    <div class="token-detail" id="tokenDetail">
+      <div class="detail-header">
+        <div class="detail-title" id="detailTitle">Token —</div>
+        <button class="btn btn-ghost" onclick="closeDetail()" style="padding:0.3rem 0.75rem;font-size:0.8rem">✕ Close</button>
+      </div>
+      <div class="detail-grid" id="detailGrid"></div>
+      <h4 style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:0.75rem">Ownership history</h4>
+      <div id="detailHistory"></div>
+      <h4 style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin:1.25rem 0 0.75rem">Sale records</h4>
+      <div id="detailSales"></div>
+    </div>
+  </div>
+
+  <!-- TAB: HOLDER -->
+  <div class="tab-panel" id="tab-holder">
+    <div class="wallet-input-row">
+      <input class="wallet-input" id="holderInput" placeholder="Enter your wallet address (0x...)"/>
+      <button class="btn btn-primary" onclick="lookupHolder()">Check royalties</button>
+    </div>
+    <div id="holderResult"><div class="empty">Enter your wallet address to see your royalties and claimable amount.</div></div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© Anastasia Smirnova Vincent, 2026 · Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001</span>
+    <div class="footer-links">
+      <a href="https://x.com/cipollaprotocol">X</a>
+      <a href="https://discord.gg/cipollaprotocol">Discord</a>
+      <a href="mailto:contact@cipollaprotocol.io">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────
+const RPC_URL = "https://mainnet.base.org"; // → change to https://mainnet.base.org at launch
+const CONTRACT_ADDRESS = "0x33D2827fa39A49DC4De76467c93e58Bf9DE96072";
+const MAX_SUPPLY = 250;
+const NETWORK_NAME = "Base"; // → "Base Mainnet" at launch
+
+const STRATA = [
+  {name:"Genesis Seed",start:1,end:1},
+  {name:"Genesis Core",start:2,end:11},
+  {name:"Inner Layer",start:12,end:51},
+  {name:"Middle Layer",start:52,end:151},
+  {name:"Outer Layer",start:152,end:230},
+  {name:"Surface Layer",start:231,end:250},
+];
+const INTRUDERS = [4,29,72,217,236];
+const CHANNELS = ["Unknown","OpenSea","Foundation","Blur","P2P","Other"];
+
+const ABI = [
+  "function totalSupply() view returns (uint256)",
+  "function mintPrice() view returns (uint256)",
+  "function ownerOf(uint256 tokenId) view returns (address)",
+  "function getOwnerHistory(uint256 tokenId) view returns (address[])",
+  "function getSaleHistory(uint256 tokenId) view returns (tuple(uint256 timestamp, address caller, uint256 salePriceDeclared, uint256 royaltiesSent, uint256 holderPool, uint256 creatorShare, uint256 holdersCount, bool royaltiesCoherent, uint8 channel, bool priceVerifiable, uint256 priceDiff, bool priceIncreased)[])",
+  "function claimableRoyalties(address holder) view returns (uint256)",
+  "function totalPendingClaims() view returns (uint256)",
+  "function dustReserve() view returns (uint256)",
+  "function listings(uint256 tokenId) view returns (tuple(address seller, address intendedBuyer, uint256 lowestPrice, bool active))",
+];
+
+// ── STATE ────────────────────────────────────────────────────────
+let provider, contract;
+let allSales = []; // {tokenId, record}
+let totalSupply = 0;
+let mintPrice = 0n;
+let selectedToken = null;
+
+// ── INIT ─────────────────────────────────────────────────────────
+async function init(){
+  document.getElementById('networkBadge').textContent = NETWORK_NAME;
+  try {
+    provider = new ethers.JsonRpcProvider(RPC_URL);
+    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+    await refreshAll();
+    setInterval(refreshAll, 30000);
+  } catch(e) {
+    setStatus(false);
+    console.error(e);
+  }
+}
+
+function setStatus(ok){
+  const dot = document.getElementById('statusDot');
+  const label = document.getElementById('statusLabel');
+  dot.className = 'status-dot' + (ok ? ' live' : '');
+  label.textContent = ok ? 'live' : 'disconnected';
+}
+
+// ── REFRESH ───────────────────────────────────────────────────────
+async function refreshAll(){
+  try {
+    const [supply, price, balance, pending, dust] = await Promise.all([
+      contract.totalSupply(),
+      contract.mintPrice(),
+      provider.getBalance(CONTRACT_ADDRESS),
+      contract.totalPendingClaims(),
+      contract.dustReserve(),
+    ]);
+    totalSupply = Number(supply);
+    mintPrice = price;
+
+    document.getElementById('statMinted').textContent = totalSupply;
+    document.getElementById('statMintedSub').textContent = `of ${MAX_SUPPLY-1} public (${Math.round(totalSupply/(MAX_SUPPLY-1)*100)}%)`;
+    document.getElementById('statPrice').textContent = ethers.formatEther(price);
+    document.getElementById('statBalance').textContent = fmtEth(balance);
+
+    await loadSaleHistory();
+    await loadListings();
+    setStatus(true);
+    document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+  } catch(e){
+    setStatus(false);
+    console.error(e);
+  }
+}
+
+// ── LISTINGS P2P ──────────────────────────────────────────────────
+async function loadListings(){
+  const el = document.getElementById('listingsTable');
+  const activeListings = [];
+  // tokens 2–251 as specified (token 1 = Genesis Seed, creator-held)
+  for(let id = 2; id <= 251; id++){
+    try {
+      const l = await contract.listings(id);
+      if(l.active){
+        activeListings.push({tokenId: id, listing: l});
+      }
+    } catch(e){} // token may not exist yet
+  }
+  renderListings(activeListings, el);
+}
+
+function renderListings(activeListings, el){
+  if(!activeListings.length){
+    el.innerHTML = '<div class="empty">No tokens currently listed for P2P sale.</div>';
+    return;
+  }
+  const ZERO = '0x0000000000000000000000000000000000000000';
+  const rows = activeListings.map(({tokenId, listing: l}) => `
+    <tr>
+      <td><span class="mono">#${tokenId}</span></td>
+      <td><span class="addr">${shortAddr(l.seller)}</span></td>
+      <td><span class="mono">${fmtEth(l.lowestPrice)} ETH</span></td>
+      <td><span class="addr">${l.intendedBuyer.toLowerCase() === ZERO ? '<span style="color:var(--text3)">Open</span>' : shortAddr(l.intendedBuyer)}</span></td>
+    </tr>
+  `).join('');
+  el.innerHTML = `
+    <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead><tr>
+        <th>Token</th><th>Seller</th><th>Min price</th><th>Intended buyer</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    </div>
+  `;
+}
+
+// ── SALE HISTORY ──────────────────────────────────────────────────
+async function loadSaleHistory(){
+  allSales = [];
+  let totalVolume = 0n;
+  let totalRoyalties = 0n;
+  const holderSet = new Set();
+
+  for(let id = 1; id <= Math.min(totalSupply, MAX_SUPPLY); id++){
+    try {
+      const hist = await contract.getOwnerHistory(id);
+      hist.forEach(a => holderSet.add(a.toLowerCase()));
+      const sales = await contract.getSaleHistory(id);
+      sales.forEach(s => {
+        allSales.push({tokenId:id, record:s});
+        totalVolume += s.salePriceDeclared;
+        totalRoyalties += s.royaltiesSent;
+      });
+    } catch(e){}
+  }
+
+  document.getElementById('statVolume').textContent = fmtEth(totalVolume);
+  document.getElementById('statRoyalties').textContent = fmtEth(totalRoyalties);
+  document.getElementById('statHolders').textContent = holderSet.size;
+
+  renderSalesTable();
+  renderOracleSales();
+  renderTokenGrid();
+}
+
+function renderSalesTable(){
+  if(!allSales.length){
+    document.getElementById('salesTable').innerHTML = '<div class="empty">No sales recorded yet.</div>';
+    return;
+  }
+  const sorted = [...allSales].sort((a,b) => Number(b.record.timestamp) - Number(a.record.timestamp));
+  let rows = sorted.slice(0,50).map(({tokenId,record:r}) => `
+    <tr>
+      <td><span class="mono">#${tokenId}</span> <span style="color:var(--text3);font-size:0.75rem">${getStrata(tokenId)}</span></td>
+      <td>${new Date(Number(r.timestamp)*1000).toLocaleDateString()}</td>
+      <td><span class="addr">${shortAddr(r.caller)}</span></td>
+      <td><span class="mono">${fmtEth(r.salePriceDeclared)} ETH</span></td>
+      <td><span class="mono">${fmtEth(r.royaltiesSent)} ETH</span></td>
+      <td><span class="badge badge-channel">${CHANNELS[r.channel]||'?'}</span></td>
+      <td><span style="color:${r.priceIncreased ? 'var(--green)':'var(--red)'}; font-family:'JetBrains Mono',monospace;font-size:0.78rem">${r.priceIncreased ? '↑':'↓'} ${fmtEth(r.priceDiff)} ETH</span></td>
+    </tr>
+  `).join('');
+
+  document.getElementById('salesTable').innerHTML = `
+    <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead><tr>
+        <th>Token</th><th>Date</th><th>Caller</th><th>Declared price</th>
+        <th>Royalties sent</th><th>Channel</th><th>Δ Price</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    </div>
+    ${allSales.length > 50 ? `<p style="text-align:center;padding:1rem;color:var(--text3);font-size:0.8rem">Showing 50 most recent of ${allSales.length} records</p>` : ''}
+  `;
+}
+
+function renderOracleSales(){
+  // Channel 4 = P2P; exclude it; CHANNELS = ["Unknown","OpenSea","Foundation","Blur","P2P","Other"]
+  const P2P_CHANNEL = 4;
+  const marketplaceSales = allSales.filter(({record:r}) => Number(r.channel) !== P2P_CHANNEL);
+  const el = document.getElementById('oracleTable');
+  if(!marketplaceSales.length){
+    el.innerHTML = '<div class="empty">No marketplace sales declared yet.</div>';
+    return;
+  }
+  const sorted = [...marketplaceSales].sort((a,b) => Number(b.record.timestamp) - Number(a.record.timestamp));
+  // TODO: SaleRecord has no txHash — linking to contract events page as best available alternative
+  const rows = sorted.map(({tokenId, record:r}) => `
+    <tr>
+      <td><span class="mono">#${tokenId}</span></td>
+      <td>${new Date(Number(r.timestamp)*1000).toLocaleDateString()}</td>
+      <td><span class="mono">${fmtEth(r.salePriceDeclared)} ETH</span></td>
+      <td><span class="badge badge-channel">${CHANNELS[r.channel]||'?'}</span></td>
+      <td><a href="https://basescan.org/address/${CONTRACT_ADDRESS}#events" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--gold);text-decoration:none">Basescan ↗</a></td>
+    </tr>
+  `).join('');
+  el.innerHTML = `
+    <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead><tr>
+        <th>Token</th><th>Date</th><th>Declared price</th><th>Channel</th><th>Basescan</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    </div>
+  `;
+}
+
+// ── TOKEN GRID ────────────────────────────────────────────────────
+function renderTokenGrid(){
+  const grid = document.getElementById('tokenGrid');
+  if(!totalSupply){ grid.innerHTML = '<div class="empty">No tokens minted yet.</div>'; return; }
+
+  let cards = '';
+  for(let id = 1; id <= Math.min(totalSupply, MAX_SUPPLY); id++){
+    const strata = getStrata(id);
+    const isIntruder = INTRUDERS.includes(id);
+    const salesForToken = allSales.filter(s => s.tokenId === id);
+    const royalties = salesForToken.reduce((acc,s) => acc + s.record.royaltiesSent, 0n);
+    cards += `
+      <div class="token-card ${selectedToken===id?'selected':''}" onclick="selectToken(${id})">
+        <div class="token-num">#${id}${isIntruder ? ' ★':''}</div>
+        <div class="token-layer">${strata}</div>
+        <div class="token-stats">
+          <div class="token-stat"><span>Resales</span><span>${salesForToken.length}</span></div>
+          <div class="token-stat"><span>Royalties</span><span>${fmtEth(royalties)} ETH</span></div>
+        </div>
+      </div>
+    `;
+  }
+  grid.innerHTML = cards;
+}
+
+async function selectToken(id){
+  selectedToken = id;
+  renderTokenGrid();
+  const detail = document.getElementById('tokenDetail');
+  detail.className = 'token-detail visible';
+  document.getElementById('detailTitle').textContent = `Token #${id} — ${getStrata(id)}${INTRUDERS.includes(id) ? ' ★ Intruder':''}`;
+
+  try {
+    const [hist, sales, owner] = await Promise.all([
+      contract.getOwnerHistory(id),
+      contract.getSaleHistory(id),
+      contract.ownerOf(id).catch(()=>'Not minted'),
+    ]);
+
+    const totalR = sales.reduce((a,s) => a + s.royaltiesSent, 0n);
+    document.getElementById('detailGrid').innerHTML = `
+      <div class="detail-item"><label>Current owner</label><span>${shortAddr(owner)}</span></div>
+      <div class="detail-item"><label>Historical owners</label><span>${hist.length}</span></div>
+      <div class="detail-item"><label>Total resales</label><span>${sales.length}</span></div>
+      <div class="detail-item"><label>Total royalties sent</label><span>${fmtEth(totalR)} ETH</span></div>
+    `;
+
+    document.getElementById('detailHistory').innerHTML = hist.length
+      ? `<div style="display:flex;flex-direction:column;gap:0.4rem">${hist.map((a,i) => `<div style="display:flex;gap:1rem;align-items:center;font-size:0.85rem"><span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.7rem;width:24px">${i+1}</span><span class="addr">${shortAddr(a)}</span></div>`).join('')}</div>`
+      : '<div class="empty" style="padding:1rem;text-align:left">No historical owners yet (creator token or not yet transferred)</div>';
+
+    document.getElementById('detailSales').innerHTML = sales.length
+      ? `<div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Date</th><th>Declared price</th><th>Royalties</th><th>Coherence</th><th>Channel</th></tr></thead><tbody>${
+        sales.map(s => `<tr>
+          <td>${new Date(Number(s.timestamp)*1000).toLocaleDateString()}</td>
+          <td class="mono">${fmtEth(s.salePriceDeclared)} ETH</td>
+          <td class="mono">${fmtEth(s.royaltiesSent)} ETH</td>
+          <td><span class="badge ${s.royaltiesCoherent?'badge-ok':'badge-warn'}">${s.royaltiesCoherent?'✓ exact':'⚠ mismatch'}</span></td>
+          <td><span class="badge badge-channel">${CHANNELS[s.channel]||'?'}</span></td>
+        </tr>`).join('')
+        }</tbody></table></div>`
+      : '<div class="empty" style="padding:1rem;text-align:left">No sales recorded for this token yet.</div>';
+
+  } catch(e){
+    console.error(e);
+  }
+}
+
+function closeDetail(){
+  selectedToken = null;
+  document.getElementById('tokenDetail').className = 'token-detail';
+  renderTokenGrid();
+}
+
+// ── HOLDER LOOKUP ─────────────────────────────────────────────────
+async function lookupHolder(){
+  const input = document.getElementById('holderInput').value.trim();
+  if(!input){ return; }
+  const el = document.getElementById('holderResult');
+  el.innerHTML = '<div class="loading">Looking up royalties</div>';
+  try {
+    const addr = input;
+    const claimable = await contract.claimableRoyalties(addr);
+
+    // Find tokens this holder has ever owned
+    let ownedTokens = [];
+    let totalAccumulated = 0n;
+    for(let id = 1; id <= Math.min(totalSupply, MAX_SUPPLY); id++){
+      try {
+        const hist = await contract.getOwnerHistory(id);
+        if(hist.map(a=>a.toLowerCase()).includes(addr.toLowerCase())){
+          ownedTokens.push(id);
+          const sales = await contract.getSaleHistory(id);
+          for(const s of sales){
+            if(Number(s.holdersCount) > 0) totalAccumulated += s.holderPool / s.holdersCount;
+          }
+        }
+      } catch(e){}
+    }
+
+    el.innerHTML = `
+      <div class="holder-summary">
+        <div class="holder-stats">
+          <div class="h-stat">
+            <label>Tokens in history</label>
+            <span>${ownedTokens.length}</span>
+          </div>
+          <div class="h-stat">
+            <label>Claimable now</label>
+            <span class="gold">${fmtEth(claimable)} ETH</span>
+          </div>
+          <div class="h-stat">
+            <label>Wallet</label>
+            <span style="font-size:0.85rem;font-family:'JetBrains Mono',monospace">${shortAddr(addr)}</span>
+          </div>
+        </div>
+        ${ownedTokens.length ? `
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:0.5rem">Tokens in ownership history</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem">${ownedTokens.map(id => `<span style="padding:0.2rem 0.5rem;border:1px solid var(--border);border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text2)">#${id}</span>`).join('')}</div>
+        </div>` : ''}
+        <div class="claim-row">
+          ${claimable > 0n ? `
+            <span class="claimable-amount">${fmtEth(claimable)} ETH claimable</span>
+            <a href="/docs#claim" class="btn btn-primary">How to claim →</a>
+          ` : `<span style="color:var(--text3);font-size:0.875rem">No royalties to claim at this time.</span>`}
+        </div>
+      </div>
+    `;
+  } catch(e){
+    el.innerHTML = `<div class="empty">Could not look up this address. Please check and try again.</div>`;
+    console.error(e);
+  }
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['sales','tokens','holder'][i]===name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-'+name));
+}
+
+function getStrata(id){
+  for(const s of STRATA){ if(id >= s.start && id <= s.end) return s.name; }
+  return 'Unknown';
+}
+
+function shortAddr(addr){
+  if(!addr || addr==='Not minted') return addr||'—';
+  return addr.slice(0,6)+'…'+addr.slice(-4);
+}
+
+function fmtEth(wei){
+  if(wei === undefined || wei === null) return '—';
+  const n = parseFloat(ethers.formatEther(BigInt(wei.toString())));
+  if(n === 0) return '0';
+  if(n < 0.000001) return n.toFixed(9).replace(/0+$/,'');
+  if(n < 0.01) return n.toFixed(6).replace(/0+$/,'');
+  return n.toFixed(4).replace(/\.?0+$/,'');
+}
+
+init();
+</script>
+</body>
+</html>

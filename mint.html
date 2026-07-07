@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Mint — Cipolla Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;--bg2:#141414;--bg3:#1a1a1a;
+  --border:#2a2a2a;--gold:#c9a84c;--gold2:#e8c96a;
+  --sage:#7a9e8e;--text:#e8e4dc;--text2:#9a9490;--text3:#5a5650;
+  --red:#c0392b;--green:#4a8c6a;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-weight:300;font-size:15px;line-height:1.7}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,13,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-family:'Fraunces',serif;font-size:1.1rem;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.875rem;letter-spacing:0.04em;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+
+main{max-width:1100px;margin:0 auto;padding:80px 2rem 60px}
+.mint-layout{display:grid;grid-template-columns:1fr 420px;gap:48px;align-items:start;padding-top:40px}
+
+/* LEFT: INFO */
+.mint-info{}
+.mint-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}
+.mint-info h1{font-family:'Fraunces',serif;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:300;line-height:1.2;margin-bottom:1.25rem}
+.mint-info h1 em{font-style:normal;font-family:'Fraunces',serif;font-size:1.75rem;font-weight:300;color:var(--gold)}
+.mint-desc{color:var(--text2);font-size:0.95rem;max-width:500px;line-height:1.8;margin-bottom:2rem}
+
+.mint-facts{display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem}
+.fact{display:flex;justify-content:space-between;align-items:baseline;padding:0.6rem 0;border-bottom:1px solid rgba(42,42,42,0.5)}
+.fact-label{font-size:0.85rem;color:var(--text3)}
+.fact-value{font-family:'JetBrains Mono',monospace;font-size:0.875rem;color:var(--text)}
+
+.mint-notice{background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+.mint-notice h3{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem}
+.mint-notice ul{list-style:none;display:flex;flex-direction:column;gap:0.4rem}
+.mint-notice li{font-size:0.85rem;color:var(--text2);padding-left:1rem;position:relative}
+.mint-notice li::before{content:'→';position:absolute;left:0;color:var(--gold)}
+
+.mint-links{display:flex;gap:1rem;flex-wrap:wrap}
+.mint-link{font-size:0.82rem;color:var(--text3);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1px;transition:all 0.2s}
+.mint-link:hover{color:var(--text2);border-color:var(--text3)}
+
+/* RIGHT: MINT BOX */
+.mint-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:2rem;position:sticky;top:72px}
+.mint-box-title{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:300;color:var(--text);margin-bottom:1.5rem}
+
+.progress-bar{height:4px;background:var(--bg3);border-radius:2px;margin-bottom:0.6rem;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width 0.5s}
+.progress-label{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text3);margin-bottom:1.5rem}
+
+.price-display{text-align:center;padding:1.5rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.price-label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:0.4rem}
+.price-amount{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:300;color:var(--gold);line-height:1}
+.price-unit{font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--text2);margin-top:0.3rem}
+
+.btn-mint{width:100%;padding:1rem;background:var(--gold);color:#0d0d0d;font-family:'Inter',sans-serif;font-weight:500;font-size:1rem;border:none;border-radius:5px;cursor:pointer;transition:all 0.2s;margin-bottom:1rem;letter-spacing:0.02em}
+.btn-mint:hover:not(:disabled){background:var(--gold2)}
+.btn-mint:disabled{opacity:0.4;cursor:not-allowed}
+.btn-connect{width:100%;padding:1rem;background:none;color:var(--text2);font-family:'Inter',sans-serif;font-weight:400;font-size:0.9rem;border:1px solid var(--border);border-radius:5px;cursor:pointer;transition:all 0.2s;margin-bottom:1rem}
+.btn-connect:hover{border-color:var(--gold);color:var(--text)}
+
+.wallet-info{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text3);text-align:center;margin-bottom:1rem;min-height:20px}
+
+.mint-status{min-height:48px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;border-radius:4px;padding:0.75rem;text-align:center}
+.mint-status.idle{color:var(--text3)}
+.mint-status.loading{color:var(--text2);background:var(--bg3)}
+.mint-status.success{color:var(--green);background:rgba(74,140,106,0.08);border:1px solid rgba(74,140,106,0.2)}
+.mint-status.error{color:var(--red);background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.15)}
+
+.tech-links{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:0.5rem}
+.tech-link{display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:var(--text3);text-decoration:none;transition:color 0.2s}
+.tech-link:hover{color:var(--text2)}
+.tech-link span:first-child{font-family:'JetBrains Mono',monospace}
+
+/* SECURITY */
+.security-block{margin-top:48px;padding:1.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:6px}
+.security-block h3{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:0.75rem}
+.security-block p{font-size:0.82rem;color:var(--text3);line-height:1.7;margin:0}
+
+footer{border-top:1px solid var(--border);padding:2rem;margin-top:60px}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-copy{font-size:0.8rem;color:var(--text3)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:0.8rem;color:var(--text3);text-decoration:none}
+.footer-links a:hover{color:var(--text2)}
+
+@media(max-width:800px){
+  .mint-layout{grid-template-columns:1fr}
+  .mint-box{position:static}
+}
+</style>
+<link rel="icon" href="/cipolla_favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/cipolla_favicon_512.png"/>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+   <a href="/" class="nav-logo"><img src="/cipolla_favicon_32.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"/>Cipolla Protocol</a>
+    <ul class="nav-links">
+      <li><a href="/about">About</a></li>
+      <li><a href="/docs">Docs</a></li>
+      <li><a href="/prototype">Prototype</a></li>
+      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/mint" class="active">Mint</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="mint-layout">
+
+    <!-- LEFT -->
+    <div class="mint-info">
+      <p class="mint-eyebrow">Layer Zero — 250 NFTs</p>
+      <h1>Mint opens Wednesday July 8, 2026 at 18:00 CET.<br/><em>250 NFT. Layer Zero of a new protocol.</em></h1>
+      <p class="mint-desc">This collection is the first public implementation of a new economic mechanism designed for tokenized assets. Each NFT is a unique position in a live economic experiment. The supply is fixed. The reveal comes in 30 days.</p>
+
+      <div class="mint-facts">
+        <div class="fact"><span class="fact-label">Price</span><span class="fact-value" id="livePrice">0.05 ETH</span></div>
+        <div class="fact"><span class="fact-label">Supply</span><span class="fact-value">250 tokens (fixed)</span></div>
+        <div class="fact"><span class="fact-label">Network</span><span class="fact-value">Base L2</span></div>
+        <div class="fact"><span class="fact-label">Reveal</span><span class="fact-value">30 days after opening</span></div>
+        <div class="fact"><span class="fact-label">Creator royalty</span><span class="fact-value">10% perpetual</span></div>
+        <div class="fact"><span class="fact-label">Holder royalty</span><span class="fact-value">5% — all historical owners</span></div>
+      </div>
+
+      <div class="mint-notice">
+        <h3>Before you participate</h3>
+        <ul>
+          <li><a href="/docs" style="color:inherit">Read the documentation</a></li>
+          <li><a href="https://basescan.org/address/CONTRACT_ADDRESS" style="color:inherit" target="_blank">Examine the contract on Basescan</a></li>
+          <li><a href="/prototype" style="color:inherit">Test the interactive simulator</a></li>
+          <li>Make sure you understand how the system works</li>
+          <li>Participation is entirely voluntary</li>
+          <li>No returns are guaranteed</li>
+        </ul>
+      </div>
+
+      <div class="mint-links">
+        <a href="/about" class="mint-link">About the protocol</a>
+        <a href="/docs#guide-p2p" class="mint-link">P2P sales guide</a>
+        <a href="/docs#faq" class="mint-link">FAQ</a>
+        <a href="/dashboard" class="mint-link">Collection dashboard</a>
+      </div>
+
+      <div class="security-block" style="margin-top:2rem">
+        <h3>Security notice</h3>
+        <p>No smart contract audit can guarantee the complete absence of vulnerabilities. We have conducted a thorough internal review and an independent external security review. This V1 deployment is an experiment — participation carries inherent risk. Never invest more than you are prepared to lose.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: MINT BOX -->
+    <div class="mint-box">
+      <div class="mint-box-title">Mint a Cipolla token</div>
+
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-label">
+        <span id="progressMinted">— minted</span>
+        <span id="progressRemaining">— remaining</span>
+      </div>
+
+      <div class="price-display">
+        <div class="price-label">Mint price</div>
+        <div class="price-amount" id="priceDisplay">0.05</div>
+        <div class="price-unit">ETH on Base</div>
+      </div>
+
+      <div class="wallet-info" id="walletInfo">Not connected</div>
+      <button class="btn-connect" id="btnConnect" onclick="connectWallet()">Connect wallet</button>
+      <button class="btn-mint" id="btnMint" onclick="doMint()" disabled>Mint</button>
+
+      <div class="mint-status idle" id="mintStatus">Connect your wallet on Base network to mint.</div>
+
+      <div class="tech-links">
+        <a href="#" class="tech-link" id="basescanLink" target="_blank">
+          <span>Contract on Basescan</span><span>↗</span>
+        </a>
+        <a href="/docs" class="tech-link">
+          <span>Technical documentation</span><span>↗</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© Anastasia Smirnova Vincent, 2026 · Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001</span>
+    <div class="footer-links">
+      <a href="https://x.com/cipollaprotocol">X</a>
+      <a href="https://discord.gg/cipollaprotocol">Discord</a>
+      <a href="mailto:contact@cipollaprotocol.io">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const CONTRACT_ADDRESS = "0x33D2827fa39A49DC4De76467c93e58Bf9DE96072";
+const BASE_CHAIN_ID = 8453; // mainnet — chain ID 8453
+const BASE_CHAIN_ID_HEX = "0x2105";
+const MAX_SUPPLY = 250;
+
+const ABI = [
+  "function mint() external payable",
+  "function mintPrice() view returns (uint256)",
+  "function totalSupply() view returns (uint256)",
+  "function mintActive() view returns (bool)",
+];
+
+let provider, signer, contract;
+
+document.getElementById('basescanLink').href = `https://basescan.org/address/${CONTRACT_ADDRESS}`;
+
+async function loadContractData(){
+  try {
+    const readProvider = new ethers.JsonRpcProvider("https://mainnet.base.org");
+    const readContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, readProvider);
+    const [price, supply, active] = await Promise.all([
+      readContract.mintPrice(),
+      readContract.totalSupply(),
+      readContract.mintActive(),
+    ]);
+    const priceEth = ethers.formatEther(price);
+    document.getElementById('priceDisplay').textContent = parseFloat(priceEth).toFixed(4).replace(/\.?0+$/,'') || '0.05';
+    document.getElementById('livePrice').textContent = parseFloat(priceEth).toFixed(4).replace(/\.?0+$/,'') + ' ETH';
+    const minted = Number(supply);
+    const publicMinted = Math.max(0, minted - 1);
+    const remaining = MAX_SUPPLY - 1 - publicMinted;
+    const pct = Math.round(publicMinted / (MAX_SUPPLY-1) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressMinted').textContent = `${publicMinted} minted (${pct}%)`;
+    document.getElementById('progressRemaining').textContent = `${remaining} remaining`;
+    if(!active){
+      document.getElementById('mintStatus').textContent = 'Mint is not active yet.';
+      document.getElementById('mintStatus').className = 'mint-status idle';
+    }
+  } catch(e){ console.error(e); }
+}
+
+async function connectWallet(){
+  if(!window.ethereum){ setStatus('error','No wallet detected. Please install MetaMask.'); return; }
+  try {
+    provider = new ethers.BrowserProvider(window.ethereum);
+    const network = await provider.getNetwork();
+    if(Number(network.chainId) !== BASE_CHAIN_ID){
+      try {
+        await window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:BASE_CHAIN_ID_HEX}]});
+      } catch(e){
+        setStatus('error','Please switch to Base network in your wallet.');
+        return;
+      }
+      provider = new ethers.BrowserProvider(window.ethereum);
+    }
+    signer = await provider.getSigner();
+    const addr = await signer.getAddress();
+    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+    document.getElementById('walletInfo').textContent = addr.slice(0,6)+'…'+addr.slice(-4);
+    document.getElementById('btnConnect').style.display = 'none';
+    document.getElementById('btnMint').disabled = false;
+    setStatus('idle','Ready to mint. Confirm the transaction in your wallet.');
+  } catch(e){
+    setStatus('error', e.message || 'Connection failed.');
+  }
+}
+
+async function doMint(){
+  if(!signer || !contract){ return; }
+  try {
+    document.getElementById('btnMint').disabled = true;
+    setStatus('loading','Waiting for confirmation in your wallet…');
+    const price = await contract.mintPrice();
+    const tx = await contract.mint({value: price});
+    setStatus('loading',`Transaction sent. Waiting for confirmation… (${tx.hash.slice(0,10)}…)`);
+    const receipt = await tx.wait();
+    setStatus('success',`✓ Minted successfully! Token registered in the ownership history. View on Basescan: ${tx.hash.slice(0,14)}…`);
+    document.getElementById('btnMint').disabled = false;
+    loadContractData();
+  } catch(e){
+    setStatus('error', e.reason || e.message || 'Transaction failed.');
+    document.getElementById('btnMint').disabled = false;
+  }
+}
+
+function setStatus(type, msg){
+  const el = document.getElementById('mintStatus');
+  el.className = 'mint-status ' + type;
+  el.textContent = msg;
+}
+
+loadContractData();
+</script>
+</body>
+</html>
