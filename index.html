@@ -1,169 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cipolla Protocol</title>
-<meta name="description" content="An experimental onchain economic mechanism for tokenized assets.">
-<link rel="icon" href="/cipolla_favicon.ico" sizes="any"/>
-<link rel="apple-touch-icon" href="/cipolla_favicon_512.png"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>About — Cipolla Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:    #1a1917;
-  --bg2:   #242320;
-  --gold:  #b8860b;
-  --gold2: #daa520;
-  --text:  #f0ede6;
-  --text2: #a09e97;
-  --text3: #6b6a65;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;
+  --bg2:#141414;
+  --bg3:#1a1a1a;
+  --border:#2a2a2a;
+  --gold:#c9a84c;
+  --gold2:#e8c96a;
+  --copper:#b87333;
+  --sage:#7a9e8e;
+  --text:#e8e4dc;
+  --text2:#9a9490;
+  --text3:#5a5650;
+  --red:#c0392b;
+  --green:#4a8c6a;
 }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-.wrap {
-  max-width: 560px;
-  width: 100%;
-  text-align: center;
-}
-.onion {
-  margin-bottom: 2rem;
-  display: block;
-  animation: breathe 4s ease-in-out infinite;
-}
-.onion img {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-}
-@keyframes breathe {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50%       { opacity: 1;   transform: scale(1.06); }
-}
-.name {
-  font-size: 13px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 0.6rem;
-  font-weight: 500;
-}
-.divider {
-  width: 40px;
-  height: 1px;
-  background: var(--gold);
-  margin: 1.5rem auto;
-  opacity: 0.4;
-}
-.tagline {
-  font-size: 22px;
-  font-weight: 300;
-  line-height: 1.45;
-  color: var(--text);
-  letter-spacing: -0.01em;
-  margin-bottom: 0.5rem;
-}
-.tagline em {
-  font-style: normal;
-  color: var(--gold2);
-}
-.sub {
-  font-size: 14px;
-  color: var(--text2);
-  line-height: 1.6;
-  margin-bottom: 3rem;
-}
-.status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bg2);
-  border: 1px solid rgba(184,134,11,0.25);
-  border-radius: 100px;
-  padding: 6px 16px;
-  font-size: 12px;
-  color: var(--text2);
-  letter-spacing: 0.04em;
-  margin-bottom: 3rem;
-}
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 1; }
-}
-.links {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-.links a {
-  font-size: 13px;
-  color: var(--text3);
-  text-decoration: none;
-  letter-spacing: 0.04em;
-  transition: color 0.2s;
-}
-.links a:hover { color: var(--gold); }
-.links-sep {
-  width: 1px;
-  height: 12px;
-  background: var(--text3);
-  opacity: 0.3;
-}
-footer {
-  margin-top: 4rem;
-  font-size: 11px;
-  color: var(--text3);
-  letter-spacing: 0.06em;
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-weight:300;line-height:1.7;font-size:16px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,13,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-family:'Fraunces',serif;font-size:1.1rem;color:var(--gold);text-decoration:none;letter-spacing:0.02em}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.875rem;letter-spacing:0.04em;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+
+/* LAYOUT */
+main{max-width:780px;margin:0 auto;padding:96px 2rem 80px}
+section{margin-bottom:72px}
+
+/* HERO */
+.hero{padding:80px 0 48px;border-bottom:1px solid var(--border);margin-bottom:72px}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:1.5rem}
+.hero h1{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;line-height:1.2;color:var(--text);margin-bottom:1.5rem}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero-sub{font-size:1.05rem;color:var(--text2);line-height:1.8}
+
+/* SECTION TITLES */
+h2{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)}
+h3{font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;margin-top:2rem}
+p{color:var(--text2);margin-bottom:1.25rem;line-height:1.8}
+p strong{color:var(--text);font-weight:500}
+
+/* CALLOUT */
+.callout{border-left:2px solid var(--gold);padding:1.25rem 1.5rem;background:rgba(201,168,76,0.04);margin:2rem 0;border-radius:0 4px 4px 0}
+.callout p{margin:0;color:var(--text);font-style:italic}
+
+/* FLOW */
+.flow{display:flex;flex-direction:column;gap:0;margin:2rem 0}
+.flow-step{display:grid;grid-template-columns:2px 1fr;gap:0 1.5rem}
+.flow-line{background:var(--border);position:relative}
+.flow-step:last-child .flow-line{background:linear-gradient(var(--border),transparent)}
+.flow-dot{position:absolute;top:4px;left:-4px;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid var(--bg)}
+.flow-content{padding:0 0 2rem}
+.flow-label{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:0.4rem}
+.flow-text{color:var(--text2);font-size:0.95rem}
+.flow-dist{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--text);margin-top:0.4rem}
+
+/* TABLE 2COL */
+.table-2col{width:100%;border-collapse:collapse;margin:1.5rem 0}
+.table-2col th{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text2);padding:0.6rem 1rem;border-bottom:1px solid var(--border);text-align:left}
+.table-2col td{padding:0.75rem 1rem;border-bottom:1px solid rgba(42,42,42,0.5);font-size:0.9rem;vertical-align:top}
+.table-2col td:first-child{color:var(--text);width:55%}
+.table-2col td:last-child{color:var(--text2)}
+.can{color:var(--sage)!important}
+.cannot{color:var(--red)!important}
+
+/* PERMISSIONS TABLE */
+.perm-table{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:1.5rem 0}
+.perm-col{background:var(--bg2);padding:1.5rem}
+.perm-col h4{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+.perm-col.can-col h4{color:var(--sage)}
+.perm-col.cannot-col h4{color:var(--red)}
+.perm-item{display:flex;gap:0.6rem;align-items:flex-start;margin-bottom:0.75rem;font-size:0.875rem;color:var(--text2);line-height:1.5}
+.perm-icon{flex-shrink:0;margin-top:1px}
+.can-col .perm-icon{color:var(--sage)}
+.cannot-col .perm-icon{color:var(--red)}
+
+/* KNOWN RISKS */
+.risk-list{list-style:none;display:flex;flex-direction:column;gap:1rem;margin:1.5rem 0}
+.risk-item{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:1.25rem 1.5rem}
+.risk-title{font-size:0.875rem;font-weight:500;color:var(--text);margin-bottom:0.4rem}
+.risk-desc{font-size:0.875rem;color:var(--text2);margin:0;line-height:1.6}
+
+/* VISION */
+.phase-list{display:flex;flex-direction:column;gap:0.75rem;margin:1.5rem 0}
+.phase{display:flex;gap:1.25rem;align-items:flex-start;padding:1rem 1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:6px}
+.phase-num{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--gold);flex-shrink:0;padding-top:2px;width:48px}
+.phase-content{}
+.phase-title{font-size:0.9rem;font-weight:500;color:var(--text);margin-bottom:0.25rem}
+.phase-desc{font-size:0.85rem;color:var(--text2);margin:0}
+
+/* SECURITY NOTICE */
+.security-notice{background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);border-radius:6px;padding:1.25rem 1.5rem;margin:2rem 0}
+.security-notice p{font-size:0.85rem;color:var(--text2);margin:0;line-height:1.7}
+.security-notice strong{color:var(--gold)}
+
+/* CTA */
+.cta-bar{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border)}
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.6rem 1.25rem;border-radius:4px;font-size:0.875rem;font-weight:500;text-decoration:none;transition:all 0.2s;letter-spacing:0.02em}
+.btn-primary{background:var(--gold);color:#0d0d0d}
+.btn-primary:hover{background:var(--gold2)}
+.btn-ghost{border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--text)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-copy{font-size:0.8rem;color:var(--text3)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:0.8rem;color:var(--text3);text-decoration:none}
+.footer-links a:hover{color:var(--text2)}
+
+@media(max-width:640px){
+  .perm-table{grid-template-columns:1fr}
+  .nav-links{gap:1rem}
+  main{padding:80px 1.25rem 60px}
 }
 </style>
+<link rel="icon" href="/cipolla_favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/cipolla_favicon_512.png"/>
 </head>
 <body>
-<div class="wrap">
-  <span class="onion">
-    <img src="/cipolla_favicon_512.png" alt="Cipolla Protocol"/>
-  </span>
-  <div class="name">Cipolla Protocol<br/><span style="font-size:9px;letter-spacing:0.15em;opacity:0.6;text-align:center;display:block"> Every layer counts.</span></div>
-  <div class="divider"></div>
-  <p class="tagline">
-    Dynamic value distribution<br>
-    for <em>tokenized assets.</em>
-  </p>
-  <p class="sub">
-    A public experiment in a new economic mechanism<br>
-    for tokenized assets. First implementation on Base.
-  </p>
-  <div class="status">
-    <span class="dot"></span>
-    Launch coming soon — 250 NFTs
+
+<nav>
+  <div class="nav-inner">
+  <a href="/" class="nav-logo"><img src="/cipolla_favicon_32.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"/>Cipolla Protocol</a>
+    <ul class="nav-links">
+      <li><a href="/about" class="active">About</a></li>
+      <li><a href="/docs">Docs</a></li>
+      <li><a href="/prototype">Prototype</a></li>
+      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/mint">Mint</a></li>
+    </ul>
   </div>
-  <div class="links">
-    <a href="https://x.com/cipollaprotocol" target="_blank">X / Twitter</a>
-    <div class="links-sep"></div>
-    <a href="https://discord.gg/cipollaprotocol" target="_blank">Discord</a>
-    <div class="links-sep"></div>
-    <a href="mailto:contact@cipollaprotocol.io">Contact</a>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-eyebrow">Cipolla Protocol — Layer Zero</p>
+    <h1>Dynamic value distribution<br/><em>for tokenized assets.</em></h1>
+    <p class="hero-sub">A public experiment in a new economic mechanism for tokenized assets, tested on a collection of 250 NFTs: after every resale, a percentage of the sale price is automatically shared among all previous owners — permanently, immutably, on-chain.</p>
   </div>
-</div>
+
+  <!-- PROBLEM -->
+  <section id="problem">
+    <h2>The problem we are solving</h2>
+    <p>In asset markets — whether tokenized or not — value is typically distributed to current holders only. Past participants receive nothing after selling.</p>
+    <p>In NFT markets, creator royalties (ERC-2981 standard) attribute a percentage of each resale to the original creator. But only to the creator.</p>
+    <p>Cipolla Protocol extends this logic: every historical holder — not just the creator or the last seller — receives a fraction of each future resale, automatically and permanently.</p>
+    <p>This approach is currently being tested on a collection of 250 NFTs.</p>
+    <p>If this experiment proves conclusive, the approach could be adapted to any tokenized asset — real estate, securities, intellectual property — subject to applicable regulations in each jurisdiction and asset class.</p>
+  </section>
+
+  <!-- SOLUTION -->
+  <section id="solution">
+    <h2>Our approach</h2>
+    <p>We propose a model that permanently encodes two types of royalties directly into the smart contract: <strong>creator royalties and holder royalties</strong> — both automatically distributed after each resale.</p>
+    <p>Every time an asset is resold, royalties are distributed to all wallets that have ever owned it. The list of historical owners grows automatically with each transfer, creating a living record of participation that is transparent, immutable, and self-executing.</p>
+    <p>This mechanism produces two simultaneous effects that emerge naturally from the principle itself — without any additional rules or enforcement:</p>
+    <h3>Effect 1 — Value distribution</h3>
+    <p>A form of social distribution of collectively created value. Every participant who contributed to building the asset's reputation and liquidity continues to benefit from its future appreciation.</p>
+    <h3>Effect 2 — Organic alignment</h3>
+    <p>Every former owner becomes an economically incentivized ambassador for an asset they once held. The community of historical owners naturally becomes a self-regulating force, collectively motivated to trade on marketplaces that honor the protocol.</p>
+    <div class="callout"><p>"No governance. No rules. No enforcement. Just shared economic interest, working quietly in the background of every transaction."</p></div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="mechanism">
+    <h2>How it works</h2>
+    <p>On every secondary sale, <strong>15% of the sale price</strong> is distributed automatically via the smart contract:</p>
+    <table class="table-2col" style="margin-bottom:2rem">
+      <thead><tr><th>Recipient</th><th>Share</th></tr></thead>
+      <tbody>
+        <tr><td>Creator (permanent)</td><td><span style="color:var(--gold);font-family:'JetBrains Mono',monospace">10%</span></td></tr>
+        <tr><td>All historical owners (equal split)</td><td><span style="color:var(--sage);font-family:'JetBrains Mono',monospace">5%</span></td></tr>
+        <tr><td>Seller</td><td><span style="color:var(--text2);font-family:'JetBrains Mono',monospace">85%</span></td></tr>
+      </tbody>
+    </table>
+
+    <p>The pool grows with every new owner. The earlier you enter the ownership chain, the more distributions you accumulate over time.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Mint</div>
+          <div class="flow-text">You are registered in the historical ownership record.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">First resale</div>
+          <div class="flow-dist">Creator 10% + 1 holder 5%</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Second resale</div>
+          <div class="flow-dist">Creator 10% + 2 holders 2.5% each</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Every subsequent resale</div>
+          <div class="flow-text">The pool grows with each new owner — automatically, permanently, on-chain.</div>
+          <div class="flow-dist" style="color:var(--text2);margin-top:0.5rem">Each address appears once in history, regardless of how many times it buys and resells. Anti-wash trading by design.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TWO WAYS TO OWN -->
+  <section id="two-ways">
+    <h2>Two ways to own a token. One way to live off it.</h2>
+    <p>Buying on a marketplace (OpenSea, etc.): full price freedom, but the buyer does NOT enter the Provenance Royalties ownership history — no future royalties.</p>
+    <p>Buying via buyP2P() on the Cipolla site: the buyer enters the ownership history and receives perpetual royalties on all future resales of the token, even after reselling it. The minimum price is protected by an on-chain oracle (getMarketAverage()), which prevents wash-trading attacks where a malicious actor could otherwise enter the ownership history for free and capture future holder-pool royalty distributions.</p>
+    <p>If a token is bought and sold alternately on a marketplace and via buyP2P(), only the buyers who went through buyP2P() enter the holder pool that receives royalties — marketplace buyers never enter it.</p>
+  </section>
+
+  <!-- COLLECTION -->
+  <section id="collection">
+    <h2>The collection — 250 NFTs</h2>
+    <p>The collection is limited to <strong>250 unique NFTs</strong>, each based on an original physical artwork by Anastasia Smirnova Vincent. Each token is numbered, belongs to a specific layer, and participates in the provenance royalties mechanism from the moment of its first resale (via buyP2P()).</p>
+    <p>Within each of the 5 layers, one token is an <strong>intruder</strong> — a rare variant with a distinctive visual identity. Its position was determined before the first mint using a provably fair random process (commit-reveal mechanism). The seed will be publicly revealed 30 days after launch, allowing anyone to independently verify the intruder positions were not altered after the fact.</p>
+
+    <table class="table-2col">
+      <thead><tr><th>Layer</th><th>Tokens</th></tr></thead>
+      <tbody>
+        <tr><td>Genesis Seed (creator)</td><td style="font-family:'JetBrains Mono',monospace;font-size:0.85rem">#1 — reserved</td></tr>
+        <tr><td>Genesis Core</td><td style="font-family:'JetBrains Mono',monospace;font-size:0.85rem">#2 – #11 (10 tokens)</td></tr>
+        <tr><td>Inner Layer</td><td style="font-family:'JetBrains Mono',monospace;font-size:0.85rem">#12 – #51 (40 tokens)</td></tr>
+        <tr><td>Middle Layer</td><td style="font-family:'JetBrains Mono',monospace;font-size:0.85rem">#52 – #151 (100 tokens)</td></tr>
+        <tr><td>Outer Layer</td><td style="font-family:'JetBrains Mono',monospace;font-size:0.85rem">#152 – #230 (79 tokens)</td></tr>
+        <tr><td>Surface Layer</td><td style="font-family:'JetBrains Mono',monospace;font-size:0.85rem">#231 – #250 (20 tokens)</td></tr>
+      </tbody>
+    </table>
+
+    <p>A <strong>reveal is scheduled 30 days after the mint opens</strong>, unveiling the true image and layer identity of each token.</p>
+  </section>
+
+  <!-- PERMISSIONS -->
+  <section id="transparency">
+    <h2>Transparency & permissions</h2>
+    <p>We believe the fastest path to trust is a complete and honest description of what the creator can and cannot do.</p>
+
+    <div class="perm-table">
+      <div class="perm-col can-col">
+        <h4>The team can</h4>
+        <div class="perm-item"><span class="perm-icon">✓</span><span>Reveal — update the metadata URI 30 days after mint to unveil each token's true image</span></div>
+        <div class="perm-item"><span class="perm-icon">✓</span><span>Adjust mint price — with a mandatory 48-hour on-chain timelock; any change will be announced in advance on our official social media channels</span></div>
+        <div class="perm-item"><span class="perm-icon">✓</span><span>Emergency pause — suspend new mints in case of a security issue</span></div>
+        <div class="perm-item"><span class="perm-icon">✓</span><span>Withdraw mint proceeds — only the portion exceeding total pending holder royalties</span></div>
+      </div>
+      <div class="perm-col cannot-col">
+        <h4>The team cannot</h4>
+        <div class="perm-item"><span class="perm-icon">✗</span><span>Modify the core economic rules — 10% and 5% are permanently encoded and immutable</span></div>
+        <div class="perm-item"><span class="perm-icon">✗</span><span>Create additional tokens beyond the fixed supply of 250</span></div>
+        <div class="perm-item"><span class="perm-icon">✗</span><span>Block token transfers — transfers remain unrestricted even during an emergency pause</span></div>
+        <div class="perm-item"><span class="perm-icon">✗</span><span>Access holder royalty funds — a dedicated accounting mechanism (totalPendingClaims) ring-fences holder funds at all times</span></div>
+        <div class="perm-item"><span class="perm-icon">✗</span><span>Be registered as a historical owner eligible for the 5% holder distribution</span></div>
+      </div>
+    </div>
+
+    <h3>Known risks</h3>
+    <ul class="risk-list">
+      <li class="risk-item">
+        <div class="risk-title">Smart contract risk</div>
+        <p class="risk-desc">The contract has undergone a thorough internal review (Slither, Foundry, 82 automated tests) and an independent external security review by a Code4rena/Sherlock-experienced auditor. No audit guarantees the complete absence of vulnerabilities. This V1 is an experiment — never participate more than you are prepared to lose.</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- VISION -->
+  <section id="vision">
+    <h2>Long-term vision</h2>
+    <p>This collection is not the end goal. It is the first live test of a model designed for a much broader application.</p>
+    <p>The Provenance Royalties mechanism is designed for <strong>any type of tokenized asset</strong> — not just art. Financial securities, real estate, intellectual property, commodities — any asset whose value is built collectively by a chain of participants. This application depends on the regulations in force in each jurisdiction and sector.</p>
+
+    <div class="phase-list">
+      <div class="phase">
+        <span class="phase-num">Phase 1</span>
+        <div class="phase-content">
+          <div class="phase-title">Cipolla Layer Zero — now</div>
+          <p class="phase-desc">250 NFTs. First live test of the Provenance Royalties mechanism. Community of Founding Nodes.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">Phase 2</span>
+        <div class="phase-content">
+          <div class="phase-title">Artist collections — 6–12 months</div>
+          <p class="phase-desc">Additional collections deployed on the Cipolla Protocol. These future collections will integrate even more advanced sharing mechanisms. Founding Nodes receive priority access.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">Phase 3</span>
+        <div class="phase-content">
+          <div class="phase-title">Open protocol — 12–24 months</div>
+          <p class="phase-desc">Other creators deploy their collections with native Provenance Royalties. A feature will also be offered to let existing ("old fashion") NFT collections retroactively benefit from the model.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">Phase 4</span>
+        <div class="phase-content">
+          <div class="phase-title">Cipolla Marketplace — 24–36 months</div>
+          <p class="phase-desc">A native trading platform where royalty distribution is atomic, automatic, and non-negotiable. No intermediaries. Just code.</p>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:1.5rem">We are actively open to venture capital, crowdfunding, and business angels who wish to participate in building this infrastructure. <a href="mailto:contact@cipollaprotocol.io" style="color:var(--gold)">contact@cipollaprotocol.io</a></p>
+  </section>
+
+  <!-- SECURITY NOTICE -->
+  <div class="security-notice">
+    <p><strong>Security notice.</strong> No smart contract audit can guarantee the complete absence of vulnerabilities. Security reviews are bounded by time, scope, and the current state of knowledge. We have conducted a thorough internal review and will continue to monitor, improve, and iterate. This V1 deployment is an experiment — participation carries inherent risk. Never invest more than you are prepared to lose.</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-bar">
+    <a href="/prototype" class="btn btn-primary">Explore the prototype →</a>
+    <a href="/docs" class="btn btn-ghost">Technical documentation</a>
+    <a href="/mint" class="btn btn-ghost">Mint a token</a>
+  </div>
+
+</main>
+
 <footer>
-  © Anastasia Smirnova Vincent, 2026 &nbsp;·&nbsp;
-  Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001
+  <div class="footer-inner">
+    <span class="footer-copy">© Anastasia Smirnova Vincent, 2026 · Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001</span>
+    <div class="footer-links">
+      <a href="https://x.com/cipollaprotocol">X</a>
+      <a href="https://discord.gg/cipollaprotocol">Discord</a>
+      <a href="mailto:contact@cipollaprotocol.io">Contact</a>
+    </div>
+  </div>
 </footer>
+
 </body>
 </html>
