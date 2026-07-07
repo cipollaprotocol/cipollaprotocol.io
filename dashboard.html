@@ -146,6 +146,8 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center}
     <div class="nav-status">
       <div class="status-dot" id="statusDot"></div>
       <span id="statusLabel">connecting</span>
+      <button class="btn btn-ghost" onclick="connectWallet()" style="padding:0.3rem 0.8rem;font-size:0.78rem;margin-left:0.75rem">Connect wallet</button>
+      <span id="walletStatus" style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text2);margin-left:0.5rem"></span>
     </div>
   </div>
 </nav>
@@ -182,6 +184,44 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center}
 
   <!-- ORACLE SALES -->
   <div class="section-block" style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:24px">
+
+  <!-- P2P TRADING -->
+  <div class="section-block" style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:24px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:1.25rem">P2P Trading</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+      <!-- List for sale -->
+      <div>
+        <div style="font-size:0.8rem;font-weight:500;color:var(--text);margin-bottom:0.75rem">List your token for sale</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <input id="p2pListTokenId" type="number" min="1" max="250" placeholder="Token ID" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.75rem;color:var(--text);font-size:0.85rem;font-family:'JetBrains Mono',monospace"/>
+          <input id="p2pListBuyer" type="text" placeholder="Intended buyer (optional)" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.75rem;color:var(--text);font-size:0.85rem;font-family:'JetBrains Mono',monospace"/>
+          <input id="p2pListPrice" type="number" step="0.001" min="0" placeholder="Min price in ETH (optional)" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.75rem;color:var(--text);font-size:0.85rem;font-family:'JetBrains Mono',monospace"/>
+          <button class="btn btn-primary" style="margin-top:0.25rem" onclick="doApproveAndList()">Approve &amp; List</button>
+          <div id="p2pListStatus" style="font-size:0.8rem;color:var(--text3);min-height:1.2rem"></div>
+        </div>
+      </div>
+      <!-- Cancel listing -->
+      <div>
+        <div style="font-size:0.8rem;font-weight:500;color:var(--text);margin-bottom:0.75rem">Cancel listing</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <input id="p2pCancelTokenId" type="number" min="1" max="250" placeholder="Token ID" style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.75rem;color:var(--text);font-size:0.85rem;font-family:'JetBrains Mono',monospace"/>
+          <button class="btn btn-ghost" onclick="doCancelListing()">Cancel</button>
+          <div id="p2pCancelStatus" style="font-size:0.8rem;color:var(--text3);min-height:1.2rem"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Collect proceeds -->
+    <div style="border-top:1px solid var(--border);padding-top:1.25rem">
+      <div style="font-size:0.8rem;font-weight:500;color:var(--text);margin-bottom:0.75rem">Collect your proceeds</div>
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+        <span style="font-size:0.85rem;color:var(--text2)">Pending: <span id="pendingWithdrawalAmount" class="mono" style="color:var(--text)">—</span> ETH</span>
+        <button class="btn btn-primary" style="padding:0.4rem 1rem" onclick="doWithdrawSeller()">Withdraw</button>
+        <div id="p2pWithdrawStatus" style="font-size:0.8rem;color:var(--text3)"></div>
+      </div>
+    </div>
+  </div>
     <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:0.5rem">Oracle — Declared marketplace sales</div>
     <div style="font-size:0.8rem;color:var(--text3);margin-bottom:1rem;line-height:1.5">Each declared sale is verifiable against public marketplace data. The contract owner declares the exact sale price and sends exactly 15% as msg.value.</div>
     <div id="oracleTable"><div class="loading">Loading oracle sales</div></div>
@@ -264,14 +304,37 @@ const ABI = [
   "function totalPendingClaims() view returns (uint256)",
   "function dustReserve() view returns (uint256)",
   "function listings(uint256 tokenId) view returns (tuple(address seller, address intendedBuyer, uint256 lowestPrice, bool active))",
+  "function pendingWithdrawals(address) view returns (uint256)",
+  "function approve(address to, uint256 tokenId)",
+  "function listForSale(uint256 tokenId, address intendedBuyer, uint256 lowestPrice)",
+  "function cancelListing(uint256 tokenId)",
+  "function buyP2P(uint256 tokenId, address seller) payable",
+  "function withdrawSeller()",
 ];
 
 // ── STATE ────────────────────────────────────────────────────────
 let provider, contract;
+let signer = null;
+let contractWithSigner = null;
 let allSales = []; // {tokenId, record}
 let totalSupply = 0;
 let mintPrice = 0n;
 let selectedToken = null;
+
+// ── WALLET ───────────────────────────────────────────────────────
+async function connectWallet() {
+  if (!window.ethereum) {
+    alert('MetaMask not found.');
+    return;
+  }
+  const browserProvider = new ethers.BrowserProvider(window.ethereum);
+  await browserProvider.send('eth_requestAccounts', []);
+  signer = await browserProvider.getSigner();
+  const address = await signer.getAddress();
+  document.getElementById('walletStatus').textContent =
+    address.slice(0,6) + '...' + address.slice(-4);
+  contractWithSigner = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+}
 
 // ── INIT ─────────────────────────────────────────────────────────
 async function init(){
@@ -314,6 +377,7 @@ async function refreshAll(){
 
     await loadSaleHistory();
     await loadListings();
+    await loadPendingWithdrawal();
     setStatus(true);
     document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
   } catch(e){
@@ -350,18 +414,109 @@ function renderListings(activeListings, el){
       <td><span class="addr">${shortAddr(l.seller)}</span></td>
       <td><span class="mono">${fmtEth(l.lowestPrice)} ETH</span></td>
       <td><span class="addr">${l.intendedBuyer.toLowerCase() === ZERO ? '<span style="color:var(--text3)">Open</span>' : shortAddr(l.intendedBuyer)}</span></td>
+      <td><button class="btn btn-primary" style="padding:0.25rem 0.7rem;font-size:0.8rem" onclick="doBuyP2P(${tokenId},'${l.seller}','${l.lowestPrice}')">Buy</button></td>
     </tr>
   `).join('');
   el.innerHTML = `
     <div style="overflow-x:auto">
     <table class="data-table">
       <thead><tr>
-        <th>Token</th><th>Seller</th><th>Min price</th><th>Intended buyer</th>
+        <th>Token</th><th>Seller</th><th>Min price</th><th>Intended buyer</th><th></th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
     </div>
   `;
+}
+
+// ── P2P WRITE FUNCTIONS ───────────────────────────────────────────
+async function doApproveAndList(){
+  const statusEl = document.getElementById('p2pListStatus');
+  if (!contractWithSigner) {
+    await connectWallet();
+    if (!contractWithSigner) return;
+  }
+  const tokenId = document.getElementById('p2pListTokenId').value.trim();
+  const buyerRaw = document.getElementById('p2pListBuyer').value.trim();
+  const priceRaw = document.getElementById('p2pListPrice').value.trim();
+  if(!tokenId){ statusEl.textContent = 'Token ID required.'; return; }
+  const ZERO = '0x0000000000000000000000000000000000000000';
+  const buyer = buyerRaw || ZERO;
+  const price = priceRaw ? ethers.parseEther(priceRaw) : 0n;
+  try {
+    statusEl.textContent = 'Approving…';
+    const tx1 = await contractWithSigner.approve(CONTRACT_ADDRESS, tokenId);
+    await tx1.wait();
+    statusEl.textContent = 'Listing…';
+    const tx2 = await contractWithSigner.listForSale(tokenId, buyer, price);
+    await tx2.wait();
+    statusEl.textContent = '✓ Listed successfully.';
+    await loadListings();
+  } catch(e){ statusEl.textContent = '✗ ' + (e.reason || e.message || 'Error'); }
+}
+
+async function doCancelListing(){
+  const statusEl = document.getElementById('p2pCancelStatus');
+  if (!contractWithSigner) {
+    await connectWallet();
+    if (!contractWithSigner) return;
+  }
+  const tokenId = document.getElementById('p2pCancelTokenId').value.trim();
+  if(!tokenId){ statusEl.textContent = 'Token ID required.'; return; }
+  try {
+    statusEl.textContent = 'Cancelling…';
+    const tx = await contractWithSigner.cancelListing(tokenId);
+    await tx.wait();
+    statusEl.textContent = '✓ Listing cancelled.';
+    await loadListings();
+  } catch(e){ statusEl.textContent = '✗ ' + (e.reason || e.message || 'Error'); }
+}
+
+async function doBuyP2P(tokenId, seller, lowestPrice){
+  if (!contractWithSigner) {
+    await connectWallet();
+    if (!contractWithSigner) return;
+  }
+  const minEth = ethers.formatEther(BigInt(lowestPrice));
+  const input = prompt(`Enter purchase price in ETH (minimum: ${minEth} ETH)`, minEth);
+  if (input === null) return;
+  let value;
+  try { value = ethers.parseEther(input.trim()); } catch(e) { alert('Invalid ETH amount.'); return; }
+  if (value < BigInt(lowestPrice)) { alert(`Price must be at least ${minEth} ETH.`); return; }
+  try {
+    const tx = await contractWithSigner.buyP2P(tokenId, seller, { value });
+    await tx.wait();
+    alert(`✓ Token #${tokenId} purchased successfully.`);
+    await loadListings();
+  } catch(e){ alert('✗ ' + (e.reason || e.message || 'Error')); }
+}
+
+async function doWithdrawSeller(){
+  const statusEl = document.getElementById('p2pWithdrawStatus');
+  if (!contractWithSigner) {
+    await connectWallet();
+    if (!contractWithSigner) return;
+  }
+  try {
+    statusEl.textContent = 'Withdrawing…';
+    const tx = await contractWithSigner.withdrawSeller();
+    await tx.wait();
+    statusEl.textContent = '✓ Withdrawn successfully.';
+    await loadPendingWithdrawal();
+  } catch(e){ statusEl.textContent = '✗ ' + (e.reason || e.message || 'Error'); }
+}
+
+async function loadPendingWithdrawal(){
+  const el = document.getElementById('pendingWithdrawalAmount');
+  if(!el) return;
+  const signer = await provider?.getSigner?.().catch(()=>null);
+  if(!signer){ el.textContent = '—'; return; }
+  try {
+    const addr = await signer.getAddress();
+    const readContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+    const pending = await readContract.pendingWithdrawals(addr);
+    el.textContent = fmtEth(pending);
+  } catch(e){ el.textContent = '—'; }
 }
 
 // ── SALE HISTORY ──────────────────────────────────────────────────
