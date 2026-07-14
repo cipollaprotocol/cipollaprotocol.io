@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Announcements — Cipolla Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;
+  --bg2:#141414;
+  --bg3:#1a1a1a;
+  --border:#2a2a2a;
+  --gold:#c9a84c;
+  --gold2:#e8c96a;
+  --copper:#b87333;
+  --sage:#7a9e8e;
+  --text:#e8e4dc;
+  --text2:#9a9490;
+  --text3:#5a5650;
+  --red:#c0392b;
+  --green:#4a8c6a;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-weight:300;line-height:1.7;font-size:16px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,13,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-family:'Fraunces',serif;font-size:1.1rem;color:var(--gold);text-decoration:none;letter-spacing:0.02em}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.875rem;letter-spacing:0.04em;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+
+/* LAYOUT */
+main{max-width:780px;margin:0 auto;padding:96px 2rem 80px}
+section{margin-bottom:72px}
+
+/* HERO */
+.hero{padding:80px 0 48px;border-bottom:1px solid var(--border);margin-bottom:72px}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:1.5rem}
+.hero h1{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;line-height:1.2;color:var(--text);margin-bottom:1.5rem}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero-sub{font-size:1.05rem;color:var(--text2);line-height:1.8}
+
+/* SECTION TITLES */
+h2{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)}
+h3{font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;margin-top:2rem}
+p{color:var(--text2);margin-bottom:1.25rem;line-height:1.8}
+p strong{color:var(--text);font-weight:500}
+
+/* POST */
+.post{border:1px solid var(--border);border-radius:6px;padding:2rem;margin-bottom:2rem;background:var(--bg2)}
+.post-date{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem}
+.post-title{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:300;color:var(--text);margin-bottom:1.25rem}
+.post p:last-child{margin-bottom:0}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-copy{font-size:0.8rem;color:var(--text3)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:0.8rem;color:var(--text3);text-decoration:none}
+.footer-links a:hover{color:var(--text2)}
+
+@media(max-width:640px){
+  .nav-links{gap:1rem}
+  main{padding:80px 1.25rem 60px}
+}
+</style>
+<link rel="icon" href="/cipolla_favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/cipolla_favicon_512.png"/>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="/cipolla_favicon_32.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"/>Cipolla Protocol</a>
+    <ul class="nav-links">
+      <li><a href="/about.html">About</a></li>
+      <li><a href="/documentation.html">Docs</a></li>
+      <li><a href="/prototype.html">Prototype</a></li>
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/mint.html">Mint</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-eyebrow">Cipolla Protocol — Layer Zero</p>
+    <h1>Announcements</h1>
+    <p class="hero-sub">Protocol updates and transparency log</p>
+  </div>
+
+  <!-- POSTS -->
+  <section id="posts">
+
+    <div class="post">
+      <div class="post-date">July 14, 2026</div>
+      <div class="post-title">Mint price reduced to 0.005 ETH</div>
+      <p>The mint price has been reduced from 0.05 ETH to 0.005 ETH, effective July 14, 2026.</p>
+      <p>Cipolla Protocol V1 is being used as a technical sandbox to test the Provenance Royalties mechanism in real on-chain conditions. Tokens will be minted across multiple addresses to generate real distribution data and test all protocol functions — including P2P sales, marketplace listings, and royalty claims.</p>
+      <p>This activity is documented here to be fully transparent and avoid any confusion with artificial volume inflation.</p>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© Anastasia Smirnova Vincent, 2026 · Prior art: INPI ASV-2026-PROVENANCE-ROYALTIES-001</span>
+    <div class="footer-links">
+      <a href="https://x.com/cipollaprotocol">X</a>
+      <a href="https://discord.gg/cipollaprotocol">Discord</a>
+      <a href="mailto:contact@cipollaprotocol.io">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
