@@ -311,6 +311,7 @@ const ABI = [
   "function cancelListing(uint256 tokenId)",
   "function buyP2P(uint256 tokenId, address seller) payable",
   "function withdrawSeller()",
+  "event TokenListed(uint256 indexed tokenId, address indexed seller, address intendedBuyer, uint256 lowestPrice)",
 ];
 
 // ── STATE ────────────────────────────────────────────────────────
@@ -391,21 +392,25 @@ async function refreshAll(){
 async function loadListings(){
   const el = document.getElementById('listingsTable');
   const activeListings = [];
-  const BATCH_SIZE = 5;
-  const DELAY = 100;
-
-  for(let id = 2; id <= 251; id += BATCH_SIZE){
-    const batch = [];
-    for(let j = id; j < id + BATCH_SIZE && j <= 251; j++){
-      batch.push(
-        contract.listings(j)
-          .then(l => { if(l && l[3] === true) activeListings.push({tokenId: j, listing: l}); })
-          .catch(() => {})
-      );
+  try {
+    const filter = contract.filters.TokenListed();
+    const events = await contract.queryFilter(filter, 0, 'latest');
+    const tokenIds = [...new Set(events.map(e => Number(e.args[0])))];
+    const BATCH = 5;
+    for(let i = 0; i < tokenIds.length; i += BATCH){
+      const batch = tokenIds.slice(i, i + BATCH);
+      await Promise.all(batch.map(async id => {
+        try {
+          const l = await contract.listings(id);
+          if(l && l[3] === true){
+            activeListings.push({tokenId: id, listing: l});
+          }
+        } catch(e){}
+      }));
+      if(i + BATCH < tokenIds.length)
+        await new Promise(r => setTimeout(r, 100));
     }
-    await Promise.all(batch);
-    await new Promise(r => setTimeout(r, DELAY));
-  }
+  } catch(e){ console.error('loadListings error:', e); }
   renderListings(activeListings, el);
 }
 
