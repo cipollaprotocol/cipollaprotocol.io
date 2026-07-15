@@ -180,7 +180,8 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center}
   <!-- LISTINGS P2P -->
   <div class="section-block" style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:24px">
     <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem">Tokens listed for P2P sale</div>
-    <div id="listingsTable"><div class="loading">Loading listings</div></div>
+    <div style="margin-bottom:1rem"><button class="btn btn-ghost" style="padding:0.35rem 0.9rem;font-size:0.8rem" onclick="loadListings()">Load listings</button></div>
+    <div id="listingsTable"></div>
   </div>
 
   <!-- ORACLE SALES -->
@@ -279,7 +280,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center}
 
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────
-const RPC_URL = "https://base-mainnet.g.alchemy.com/v2/ITF4ac9b4FcNRx0rKbJe0"; // → change to https://mainnet.base.org at launch
+const RPC_URL = "https://mainnet.base.org";
 const CONTRACT_ADDRESS = "0x33D2827fa39A49DC4De76467c93e58Bf9DE96072";
 const MAX_SUPPLY = 250;
 const NETWORK_NAME = "Base"; // → "Base Mainnet" at launch
@@ -378,7 +379,6 @@ async function refreshAll(){
     document.getElementById('statBalance').textContent = fmtEth(balance);
 
     await loadSaleHistory();
-    await loadListings();
     await loadPendingWithdrawal();
     setStatus(true);
     document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
@@ -392,26 +392,15 @@ async function refreshAll(){
 async function loadListings(){
   const el = document.getElementById('listingsTable');
   const activeListings = [];
-  try {
-    const DEPLOY_BLOCK = 48314968;
-    const filter = contract.filters.TokenListed();
-    const events = await contract.queryFilter(filter, DEPLOY_BLOCK, 'latest');
-    const tokenIds = [...new Set(events.map(e => Number(e.args[0])))];
-    const BATCH = 5;
-    for(let i = 0; i < tokenIds.length; i += BATCH){
-      const batch = tokenIds.slice(i, i + BATCH);
-      await Promise.all(batch.map(async id => {
-        try {
-          const l = await contract.listings(id);
-          if(l && l[3] === true){
-            activeListings.push({tokenId: id, listing: l});
-          }
-        } catch(e){}
-      }));
-      if(i + BATCH < tokenIds.length)
-        await new Promise(r => setTimeout(r, 100));
-    }
-  } catch(e){ console.error('loadListings error:', e); }
+  const supply = Number(totalSupply);
+  for(let id = 2; id <= supply; id++){
+    try {
+      const l = await contract.listings(id);
+      if(l && l[3] === true){
+        activeListings.push({tokenId: id, listing: l});
+      }
+    } catch(e){}
+  }
   renderListings(activeListings, el);
 }
 
