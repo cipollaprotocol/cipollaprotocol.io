@@ -279,7 +279,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center}
 
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────
-const RPC_URL = "https://base-mainnet.g.alchemy.com/public"; // → change to https://mainnet.base.org at launch
+const RPC_URL = "https://base-mainnet.g.alchemy.com/v2/ITF4ac9b4FcNRx0rKbJe0"; // → change to https://mainnet.base.org at launch
 const CONTRACT_ADDRESS = "0x33D2827fa39A49DC4De76467c93e58Bf9DE96072";
 const MAX_SUPPLY = 250;
 const NETWORK_NAME = "Base"; // → "Base Mainnet" at launch
@@ -393,8 +393,9 @@ async function loadListings(){
   const el = document.getElementById('listingsTable');
   const activeListings = [];
   try {
+    const DEPLOY_BLOCK = 48314968;
     const filter = contract.filters.TokenListed();
-    const events = await contract.queryFilter(filter, 0, 'latest');
+    const events = await contract.queryFilter(filter, DEPLOY_BLOCK, 'latest');
     const tokenIds = [...new Set(events.map(e => Number(e.args[0])))];
     const BATCH = 5;
     for(let i = 0; i < tokenIds.length; i += BATCH){
