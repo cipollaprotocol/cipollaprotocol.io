@@ -395,6 +395,7 @@ async function loadListings(){
   for(let id = 2; id <= 251; id++){
     try {
       const l = await contract.listings(id);
+      console.log('Token', id, 'listing:', l, 'active:', l[3]);
       if(l && l[3] === true){
         activeListings.push({tokenId: id, listing: l});
       }
