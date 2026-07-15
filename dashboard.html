@@ -281,6 +281,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center}
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────
 const RPC_URL = "https://mainnet.base.org";
+const RPC_URL_ALCHEMY = "https://base-mainnet.g.alchemy.com/v2/ITF4ac9b4FcNRx0rKbJe0";
 const CONTRACT_ADDRESS = "0x33D2827fa39A49DC4De76467c93e58Bf9DE96072";
 const MAX_SUPPLY = 250;
 const NETWORK_NAME = "Base"; // → "Base Mainnet" at launch
@@ -317,6 +318,7 @@ const ABI = [
 
 // ── STATE ────────────────────────────────────────────────────────
 let provider, contract;
+let readContract = null;
 let signer = null;
 let contractWithSigner = null;
 let allSales = []; // {tokenId, record}
@@ -345,6 +347,7 @@ async function init(){
   try {
     provider = new ethers.JsonRpcProvider(RPC_URL);
     contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+    readContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, new ethers.JsonRpcProvider(RPC_URL_ALCHEMY));
     await refreshAll();
     setInterval(refreshAll, 30000);
   } catch(e) {
@@ -530,9 +533,9 @@ async function loadSaleHistory(){
 
   for(let id = 1; id <= Math.min(totalSupply, MAX_SUPPLY); id++){
     try {
-      const hist = await contract.getOwnerHistory(id);
+      const hist = await readContract.getOwnerHistory(id);
       hist.forEach(a => holderSet.add(a.toLowerCase()));
-      const sales = await contract.getSaleHistory(id);
+      const sales = await readContract.getSaleHistory(id);
       sales.forEach(s => {
         allSales.push({tokenId:id, record:s});
         totalVolume += s.salePriceDeclared;
