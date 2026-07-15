@@ -345,9 +345,9 @@ async function connectWallet() {
 async function init(){
   document.getElementById('networkBadge').textContent = NETWORK_NAME;
   try {
-    provider = new ethers.JsonRpcProvider(RPC_URL);
+    provider = new ethers.JsonRpcProvider(RPC_URL_ALCHEMY);
     contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
-    readContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, new ethers.JsonRpcProvider(RPC_URL_ALCHEMY));
+    readContract = contract;
     await refreshAll();
     setInterval(refreshAll, 30000);
   } catch(e) {
@@ -533,9 +533,9 @@ async function loadSaleHistory(){
 
   for(let id = 1; id <= Math.min(totalSupply, MAX_SUPPLY); id++){
     try {
-      const hist = await readContract.getOwnerHistory(id);
+      const hist = await contract.getOwnerHistory(id);
       hist.forEach(a => holderSet.add(a.toLowerCase()));
-      const sales = await readContract.getSaleHistory(id);
+      const sales = await contract.getSaleHistory(id);
       sales.forEach(s => {
         allSales.push({tokenId:id, record:s});
         totalVolume += s.salePriceDeclared;
