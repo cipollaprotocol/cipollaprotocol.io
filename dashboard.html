@@ -391,15 +391,20 @@ async function refreshAll(){
 async function loadListings(){
   const el = document.getElementById('listingsTable');
   const activeListings = [];
-  // tokens 2–251 as specified (token 1 = Genesis Seed, creator-held)
-  for(let id = 2; id <= 251; id++){
-    try {
-      const l = await contract.listings(id);
-      console.log('Token', id, 'listing:', l, 'active:', l[3]);
-      if(l && l[3] === true){
-        activeListings.push({tokenId: id, listing: l});
-      }
-    } catch(e){} // token may not exist yet
+  const BATCH_SIZE = 5;
+  const DELAY = 100;
+
+  for(let id = 2; id <= 251; id += BATCH_SIZE){
+    const batch = [];
+    for(let j = id; j < id + BATCH_SIZE && j <= 251; j++){
+      batch.push(
+        contract.listings(j)
+          .then(l => { if(l && l[3] === true) activeListings.push({tokenId: j, listing: l}); })
+          .catch(() => {})
+      );
+    }
+    await Promise.all(batch);
+    await new Promise(r => setTimeout(r, DELAY));
   }
   renderListings(activeListings, el);
 }
