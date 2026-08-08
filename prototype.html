@@ -315,7 +315,7 @@ function showTooltip(e, id, strata, intruder, minted){
   const tip = document.getElementById('tooltip');
   let text;
   if(!REVEALED){
-    text = `#${id} — Unrevealed — ${minted ? 'minted' : 'Available'}`;
+    text = `#${id}${intruder ? ' ★' : ''} — ${strata.name} — ${minted ? 'minted' : 'Available'}`;
   } else {
     text = `#${id} — ${strata.name}`;
     if(id === 1) text += ' (creator)';
