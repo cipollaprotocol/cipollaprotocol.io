@@ -123,12 +123,11 @@ footer{border-top:1px solid var(--border);padding:2rem;margin-top:60px}
   <div class="nav-inner">
    <a href="/" class="nav-logo"><img src="/cipolla_favicon_32.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"/>Cipolla Protocol</a>
     <ul class="nav-links">
-      <li><a href="/about.html">About</a></li>
-      <li><a href="/documentation.html">Docs</a></li>
-      <li><a href="/prototype.html" class="active">Prototype</a></li>
-      <li><a href="/dashboard.html">Dashboard</a></li>
-      <li><a href="/mint.html">Mint</a></li>
-      <li><a href="/announcements.html">Updates</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/docs">Docs</a></li>
+      <li><a href="/prototype" class="active">Prototype</a></li>
+      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/mint">Mint</a></li>
     </ul>
   </div>
 </nav>
@@ -227,7 +226,7 @@ footer{border-top:1px solid var(--border);padding:2rem;margin-top:60px}
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────
 const RPC_URL = "https://mainnet.base.org";
-const CONTRACT_ADDRESS = "0x33D2827fa39A49DC4De76467c93e58Bf9DE96072";
+const CONTRACT_ADDRESS = "0xcCb44F210A819C03A0F39D3c651D3341a5057971";
 const REVEALED = false; // → set true after reveal
 
 const STRATA = [
@@ -238,15 +237,39 @@ const STRATA = [
   {name:"Outer Layer",cls:"s4",start:152,end:230},
   {name:"Surface Layer",cls:"s5",start:231,end:250},
 ];
-const INTRUDERS = {}; // positions revealed at J+30
+const INTRUDERS = {4:"Cipollino",29:"Cipo",72:"Cipella",217:"Cipello",236:"Cipa"};
 
 const ABI = [
   "function totalSupply() view returns (uint256)",
+  "function tokenURI(uint256 tokenId) view returns (string)",
   "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
 ];
 
 let mintedSet = new Set();
 let provider, contract;
+
+// ── TOKEN IMAGE ───────────────────────────────────────────────────
+async function loadTokenImage(id, cell){
+  const key = 'cipolla_img_' + id;
+  try {
+    let imgUrl = localStorage.getItem(key);
+    if(!imgUrl){
+      const uri = await contract.tokenURI(id);
+      const jsonUrl = uri.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
+      const res = await fetch(jsonUrl);
+      const meta = await res.json();
+      imgUrl = meta.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
+      localStorage.setItem(key, imgUrl);
+    }
+    applyImageToCell(cell, imgUrl);
+  } catch(e){ console.warn('Token image load failed #' + id, e); }
+}
+
+function applyImageToCell(cell, imgUrl){
+  cell.style.backgroundImage = 'url(' + imgUrl + ')';
+  cell.style.backgroundSize = 'cover';
+  cell.style.backgroundPosition = 'center';
+}
 
 // ── GRID ──────────────────────────────────────────────────────────
 function buildGrid(){
@@ -269,6 +292,15 @@ function buildGrid(){
     cell.addEventListener('mouseenter', (e) => showTooltip(e, id, strata, isIntruder, isMinted));
     cell.addEventListener('mousemove', moveTooltip);
     cell.addEventListener('mouseleave', hideTooltip);
+
+    if(isMinted){
+      // Restore from localStorage immediately
+      const cached = localStorage.getItem('cipolla_img_' + id);
+      if(cached) applyImageToCell(cell, cached);
+      // Click to fetch/show image
+      cell.addEventListener('click', () => loadTokenImage(id, cell));
+    }
+
     grid.appendChild(cell);
   }
 }
