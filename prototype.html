@@ -337,6 +337,7 @@ async function init(){
 
     // Load current supply
     const supply = await contract.totalSupply();
+    console.log('totalSupply:', Number(supply));
     // Approximate: tokens 1..totalSupply are minted
     for(let i = 1; i <= Number(supply); i++) mintedSet.add(i);
 
