@@ -241,7 +241,7 @@ const STRATA = [
 const INTRUDERS = {4:"Cipollino",29:"Cipo",72:"Cipella",217:"Cipello",236:"Cipa"};
 
 const ABI = [
-  "function totalSupply() view returns (uint256)",
+  "function totalMinted() view returns (uint256)",
   "function tokenURI(uint256 tokenId) view returns (string)",
   "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
 ];
@@ -336,7 +336,7 @@ async function init(){
     contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
 
     // Load current supply
-    const supply = await contract.totalSupply();
+    const supply = await contract.totalMinted();
     console.log('totalSupply:', Number(supply));
     // Approximate: tokens 1..totalSupply are minted
     for(let i = 1; i <= Number(supply); i++) mintedSet.add(i);
